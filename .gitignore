@@ -7,7 +7,6 @@
 *.sln.docstates
 *.VC.db
 ApplyFrame.VC.db
-*.csproj
 
 # Build results
 [Dd]ebug/

@@ -132,12 +132,12 @@
             "HikVision"});
             this.comboBoxCameraBrand.Location = new System.Drawing.Point(276, 17);
             this.comboBoxCameraBrand.Name = "comboBoxCameraBrand";
-            this.comboBoxCameraBrand.Size = new System.Drawing.Size(108, 20);
+            this.comboBoxCameraBrand.Size = new System.Drawing.Size(132, 20);
             this.comboBoxCameraBrand.TabIndex = 1;
             // 
             // buttonParameterSet
             // 
-            this.buttonParameterSet.Location = new System.Drawing.Point(414, 17);
+            this.buttonParameterSet.Location = new System.Drawing.Point(414, 15);
             this.buttonParameterSet.Name = "buttonParameterSet";
             this.buttonParameterSet.Size = new System.Drawing.Size(78, 24);
             this.buttonParameterSet.TabIndex = 2;
@@ -168,7 +168,7 @@
             this.textBoxFile.Location = new System.Drawing.Point(2, 18);
             this.textBoxFile.Name = "textBoxFile";
             this.textBoxFile.ReadOnly = true;
-            this.textBoxFile.Size = new System.Drawing.Size(410, 21);
+            this.textBoxFile.Size = new System.Drawing.Size(408, 21);
             this.textBoxFile.TabIndex = 9;
             // 
             // buttonLocationDirectory
