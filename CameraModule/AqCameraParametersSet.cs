@@ -25,7 +25,8 @@ namespace CameraModule
     public partial class AqCameraParametersSet : Form
     {
         CameraParameters _cameraParam = new CameraParameters();
-        bool _cameraParamChanged = false;//数据改变后退出时会提醒
+        bool _isParamChanged = false;//数据改变后退出时会提醒
+        bool _isShowingParam = false;
 
         public CameraParameters CameraParam
         {
@@ -36,10 +37,11 @@ namespace CameraModule
         public string CurrentCameraName { get; set; }
         public int CurrentCameraIndex { get; set; }
 
-        public AqCameraParametersSet(CameraParameters param)
+        public AqCameraParametersSet(ref CameraParameters param)
         {
             InitializeComponent();
-            CameraParam = param;                      
+            CameraParam = param ?? throw new ArgumentNullException(nameof(param));  
+            
             RearrangeCameraName();           
             DisplayParam(CameraParam, 0);
         }
@@ -52,7 +54,7 @@ namespace CameraModule
 
         protected override void OnClosing(CancelEventArgs eventArgs)
         {
-            if(_cameraParamChanged)
+            if(_isParamChanged)
             {
                 if (MessageBox.Show("参数未保存，确定退出？", "提示信息", MessageBoxButtons.YesNo, 
                     MessageBoxIcon.Question) == DialogResult.No)
@@ -70,11 +72,19 @@ namespace CameraModule
         //所有修改参数操作都会触发此函数
         private void OnCameraParamChanged(object sender, EventArgs e)
         {
-            _cameraParamChanged = true;
+            if (_isShowingParam) return;
+            _isParamChanged = true;
         }
 
         private void OnCameraNameChanged(object sender, EventArgs e)
         {
+            if (_isParamChanged)
+            {
+                if (MessageBox.Show("参数未保存，确定替换？", "提示信息", MessageBoxButtons.YesNo,
+                    MessageBoxIcon.Question) == DialogResult.No)
+                    return;
+            }
+
             int index = ((ComboBox)sender).SelectedIndex;
             string name = ((ComboBox)sender).Text;
             if (index == -1) return;
@@ -95,7 +105,7 @@ namespace CameraModule
         #region 读取和保存参数功能
         private void buttonReadParam_Click(object sender, EventArgs e)
         {
-            if(_cameraParamChanged)
+            if(_isParamChanged)
             {
                 if (MessageBox.Show("参数未保存，确定替换？", "提示信息", MessageBoxButtons.YesNo,
                     MessageBoxIcon.Question) == DialogResult.No)
@@ -116,21 +126,47 @@ namespace CameraModule
 
         private void buttonSaveParam_Click(object sender, EventArgs e)
         {
-            UpdateAllData();
-            string localFilePath = "";
-            SaveFileDialog sfd = new SaveFileDialog();
-            sfd.Filter = "相机配置文件（*.dat）|*.dat";
-            //设置默认文件类型显示顺序 
-            sfd.FilterIndex = 1;
-            //保存对话框是否记忆上次打开的目录 
-            sfd.RestoreDirectory = true;
 
-            if (sfd.ShowDialog() == DialogResult.OK)
+            if (false == UpdateAllData(CurrentCameraIndex, CurrentCameraName)) return;
+
+            string localFilePath = "";
+            if(checkBoxConstPath.Checked)
             {
-                localFilePath = sfd.FileName.ToString(); //获得文件路径 
-                CameraParam.SerializeAndSave(localFilePath);
-                _cameraParamChanged = false;
+                localFilePath = System.IO.Directory.GetCurrentDirectory() + "\\CameraData.dat";
             }
+            else
+            {
+                SaveFileDialog sfd = new SaveFileDialog();
+                sfd.Filter = "相机配置文件（*.dat）|*.dat";
+                //设置默认文件类型显示顺序 
+                sfd.FilterIndex = 1;
+                //保存对话框是否记忆上次打开的目录 
+                sfd.RestoreDirectory = true;
+
+                if (sfd.ShowDialog() == DialogResult.OK)
+                {
+                    localFilePath = sfd.FileName.ToString(); //获得文件路径 
+                }
+                else
+                {
+                    MessageBox.Show("保存失败");
+                    return;
+                }
+            }
+            CameraParam.SerializeAndSave(localFilePath);
+            _isParamChanged = false;
+            RearrangeCameraName();
+        }
+
+        private void buttonDeleteParam_Click(object sender, EventArgs e)
+        {
+            DeleteData(CurrentCameraIndex, CurrentCameraName);
+            RearrangeCameraName();
+        }
+
+        private void buttonApplyParam_Click(object sender, EventArgs e)
+        {
+            UpdateAllData(CurrentCameraIndex, CurrentCameraName);
         }
         #endregion
 
@@ -176,6 +212,8 @@ namespace CameraModule
         //刷新窗体显示
         private void DisplayParam(CameraParameters param, int index)
         {
+            _isShowingParam = true;
+
             string name = param.CameraName[index];
             //相机信息
             textBoxCameraRename.Text = name;
@@ -197,41 +235,29 @@ namespace CameraModule
             textBoxGain.Text = param.CameraGain[name].ToString();
             textBoxAcquisitionFrequency.Text = param.CameraAcquisitionFrequency[name].ToString();
             checkBoxAutoGain.Checked = param.CameraGainAuto[name];
-            //参数更改标志位复位
-            _cameraParamChanged = false;
+
+            _isShowingParam = false;
         }
 
-        private void UpdateAllData()
+        private bool UpdateAllData(int index, string name)
         {
-            string name = CurrentCameraName;
-            int index = CurrentCameraIndex;
             //应先删除原对应相机名及参数
-            if (name != textBoxCameraRename.Text) 
+            //除非点击“新增相机”，否则CameraName的数量总比Index大
+            if (name != textBoxCameraRename.Text &&
+                CameraParam.CameraName.Count > index) 
             {
-                name = textBoxCameraRename.Text;               
-                //删除键值
-                if (CameraParam.CameraName.Count > index)
-                {
-                    CameraParam.CameraName.RemoveAt(index);
-                }
-                CameraParam.CameraId.Remove(name);
-                CameraParam.CameraIp.Remove(name);
-                CameraParam.CameraMac.Remove(name);
-                CameraParam.CameraImageWidth.Remove(name);
-                CameraParam.CameraImageHeight.Remove(name);
-                CameraParam.CameraImageOffsetX.Remove(name);
-                CameraParam.CameraImageOffsetY.Remove(name);
-                CameraParam.CameraTriggerSwitch.Remove(name);
-                CameraParam.CameraTriggerSource.Remove(name);
-                CameraParam.CameraTriggerMode.Remove(name);
-                CameraParam.CameraTriggerEdge.Remove(name);
-                CameraParam.CameraTriggerDelay.Remove(name);
-                CameraParam.CameraExposureTime.Remove(name);
-                CameraParam.CameraGain.Remove(name);
-                CameraParam.CameraAcquisitionFrequency.Remove(name);
-                CameraParam.CameraGainAuto.Remove(name);
+                DeleteData(index, name);
             }
             //更新参数
+            name = textBoxCameraRename.Text;     
+            foreach(string it in CameraParam.CameraName)
+            {
+                if (name == it)
+                {
+                    MessageBox.Show("请勿重复命名");
+                    return false;
+                }
+            }
             //相机信息      
             CameraParam.CameraName.Insert(index, name);
             CameraParam.CameraId[name] = textBoxCameraID.Text;
@@ -252,6 +278,29 @@ namespace CameraModule
             CameraParam.CameraGain[name] = Convert.ToDouble(textBoxGain.Text);
             CameraParam.CameraAcquisitionFrequency[name] = Convert.ToDouble(textBoxAcquisitionFrequency.Text);
             CameraParam.CameraGainAuto[name] = Convert.ToBoolean(checkBoxAutoGain.Checked);
+
+            return true;
+        }
+
+        private void DeleteData(int index, string name)
+        {
+            CameraParam.CameraName.RemoveAt(index);
+            CameraParam.CameraId.Remove(name);
+            CameraParam.CameraIp.Remove(name);
+            CameraParam.CameraMac.Remove(name);
+            CameraParam.CameraImageWidth.Remove(name);
+            CameraParam.CameraImageHeight.Remove(name);
+            CameraParam.CameraImageOffsetX.Remove(name);
+            CameraParam.CameraImageOffsetY.Remove(name);
+            CameraParam.CameraTriggerSwitch.Remove(name);
+            CameraParam.CameraTriggerSource.Remove(name);
+            CameraParam.CameraTriggerMode.Remove(name);
+            CameraParam.CameraTriggerEdge.Remove(name);
+            CameraParam.CameraTriggerDelay.Remove(name);
+            CameraParam.CameraExposureTime.Remove(name);
+            CameraParam.CameraGain.Remove(name);
+            CameraParam.CameraAcquisitionFrequency.Remove(name);
+            CameraParam.CameraGainAuto.Remove(name);
         }
         #endregion
     }

@@ -9,12 +9,16 @@ using AqDevice;
 
 namespace CameraModule
 {
+    /// <summary>
+    /// 相机源：相机参数数据结构
+    /// </summary>
     [Serializable]
     public class CameraParameters
     {
         bool _acquisitionParamChanged = false;
 
-        List<string> _cameraName = new List<string>();       
+        List<string> _cameraName = new List<string>();
+        Dictionary<string, AqCameraBrand> _cameraBrand = new Dictionary<string, AqCameraBrand>();             
         Dictionary<string, string> _cameraId = new Dictionary<string, string>();
         Dictionary<string, string> _cameraIp = new Dictionary<string, string>();
         Dictionary<string, string> _cameraMac = new Dictionary<string, string>();
@@ -38,115 +42,185 @@ namespace CameraModule
             set { _acquisitionParamChanged = value; }
         }
 
-        /// <summary>
-        /// 相机参数：对应SDK开发接口
-        /// </summary>
-        ///         
+        //相机参数：对应SDK开发接口      
         public List<string> CameraName
         {
             get { return _cameraName; }
-            set { _cameraName = value; }
+            set
+            {
+                _cameraName = value;
+                AcquisitionParamChanged = false;
+            }
+        }
+
+        public Dictionary<string, AqCameraBrand> CameraBrand
+        {
+            get { return _cameraBrand; }
+            set
+            {
+                _cameraBrand = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, string> CameraId
         {
             get { return _cameraId; }
-            set { _cameraId = value; }
+            set {
+                _cameraId = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, string> CameraIp
         {
             get { return _cameraIp; }
-            set { _cameraIp = value; }
+            set {
+                _cameraIp = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, string> CameraMac
         {
             get { return _cameraMac; }
-            set { _cameraMac = value; }
+            set {
+                _cameraMac = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, AqDevice.TriggerSources> CameraTriggerSource
         {
             get { return _cameraTriggerSource; }
-            set { _cameraTriggerSource = value; }
+            set
+            {
+                _cameraTriggerSource = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, AqDevice.TriggerSwitchs> CameraTriggerSwitch
         {
             get { return _cameraTriggerSwitch; }
-            set { _cameraTriggerSwitch = value; }
+            set
+            {
+                _cameraTriggerSwitch = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, AqDevice.TriggerModes> CameraTriggerMode
         {
             get { return _cameraTriggerMode; }
-            set { _cameraTriggerMode = value; }
+            set
+            {
+                _cameraTriggerMode = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, AqDevice.TriggerEdges> CameraTriggerEdge
         {
             get { return _cameraTriggerEdge; }
-            set { _cameraTriggerEdge = value; }
+            set
+            {
+                _cameraTriggerEdge = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, double> CameraExposureTime
         {
             get { return _cameraExposureTime; }
-            set { _cameraExposureTime = value; }
+            set
+            {
+                _cameraExposureTime = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, double> CameraAcquisitionFrequency
         {
             get { return _cameraAcquisitionFrequency; }
-            set { _cameraAcquisitionFrequency = value; }
+            set
+            {
+                _cameraAcquisitionFrequency = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, double> CameraTriggerDelay
         {
             get { return _cameraTriggerDelay; }
-            set { _cameraTriggerDelay = value; }
+            set
+            {
+                _cameraTriggerDelay = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, double> CameraGain
         {
             get { return _cameraGain; }
-            set { _cameraGain = value; }
+            set
+            {
+                _cameraGain = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, bool> CameraGainAuto
         {
             get { return _cameraGainAuto; }
-            set { _cameraGainAuto = value; }
+            set
+            {
+                _cameraGainAuto = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, Int64> CameraImageWidth
         {
             get { return _cameraImageWidth; }
-            set { _cameraImageWidth = value; }
+            set
+            {
+                _cameraImageWidth = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, Int64> CameraImageHeight
         {
             get { return _cameraImageHeight; }
-            set { _cameraImageHeight = value; }
+            set
+            {
+                _cameraImageHeight = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, Int64> CameraImageOffsetX
         {
             get { return _cameraImageOffsetX; }
-            set { _cameraImageOffsetX = value; }
+            set
+            {
+                _cameraImageOffsetX = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
         public Dictionary<string, Int64> CameraImageOffsetY
         {
             get { return _cameraImageOffsetY; }
-            set { _cameraImageOffsetY = value; }
+            set
+            {
+                _cameraImageOffsetY = value;
+                AcquisitionParamChanged = false;
+            }
         }
 
-        /// <summary>
-        /// 串行化，用于数据保存
-        /// </summary>
+        //方法：串行化，用于数据保存
         public void SerializeAndSave(string path)
         {
             FileStream fileStream = new FileStream(path, FileMode.Create);
@@ -165,20 +239,16 @@ namespace CameraModule
         }
     }
 
+    /// <summary>
+    /// 文件源：保存文件路径
+    /// </summary>
     public class ImageSource
     {
-        Dictionary<string, AqCameraBrand> _cameraBrand = new Dictionary<string, AqCameraBrand>();
         Dictionary<string, string> _cameraInputFile = new Dictionary<string, string>();
         Dictionary<string, string> _cameraInputFolder = new Dictionary<string, string>();
         Dictionary<string, List<string>> _folderFiles = new Dictionary<string, List<string>>();
         Dictionary<string, UInt32> _folderIndex = new Dictionary<string, uint>();
         Dictionary<string, AcquisitionMode> _cameraAcqusitionMode = new Dictionary<string, AcquisitionMode>();
-
-        public Dictionary<string, AqCameraBrand> CameraBrand
-        {
-            get { return _cameraBrand; }
-            set { _cameraBrand = value; }
-        }
 
         public Dictionary<string, string> CameraInputFile
         {
@@ -210,9 +280,7 @@ namespace CameraModule
             set { _cameraAcqusitionMode = value; }
         }
 
-        /// <summary>
-        /// 方法：逐一添加文件到文件夹字段
-        /// </summary>
+        //方法：逐一添加文件到文件夹字段
         public void UpdateFilesUnderFolder()
         {
             FolderFiles.Clear();

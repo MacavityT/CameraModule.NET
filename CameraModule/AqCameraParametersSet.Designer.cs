@@ -49,10 +49,12 @@
             this.comboBoxCameraName = new System.Windows.Forms.ComboBox();
             this.label9 = new System.Windows.Forms.Label();
             this.label7 = new System.Windows.Forms.Label();
+            this.textBoxCameraRename = new System.Windows.Forms.TextBox();
             this.textBoxCameraID = new System.Windows.Forms.TextBox();
             this.textBoxMacAddress = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.textBoxCameraIP = new System.Windows.Forms.TextBox();
+            this.label14 = new System.Windows.Forms.Label();
             this.lbTip = new System.Windows.Forms.Label();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
             this.textBoxImageOffsetY = new System.Windows.Forms.TextBox();
@@ -65,8 +67,9 @@
             this.label11 = new System.Windows.Forms.Label();
             this.buttonReadParam = new System.Windows.Forms.Button();
             this.buttonSaveParam = new System.Windows.Forms.Button();
-            this.label14 = new System.Windows.Forms.Label();
-            this.textBoxCameraRename = new System.Windows.Forms.TextBox();
+            this.buttonDeleteParam = new System.Windows.Forms.Button();
+            this.buttonApplyParam = new System.Windows.Forms.Button();
+            this.checkBoxConstPath = new System.Windows.Forms.CheckBox();
             this.groupBox3.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.groupBox2.SuspendLayout();
@@ -327,6 +330,14 @@
             this.label7.TabIndex = 5;
             this.label7.Text = "相机IP";
             // 
+            // textBoxCameraRename
+            // 
+            this.textBoxCameraRename.Location = new System.Drawing.Point(124, 64);
+            this.textBoxCameraRename.Name = "textBoxCameraRename";
+            this.textBoxCameraRename.Size = new System.Drawing.Size(255, 21);
+            this.textBoxCameraRename.TabIndex = 1;
+            this.textBoxCameraRename.TextChanged += new System.EventHandler(this.OnCameraParamChanged);
+            // 
             // textBoxCameraID
             // 
             this.textBoxCameraID.Location = new System.Drawing.Point(124, 95);
@@ -360,6 +371,16 @@
             this.textBoxCameraIP.Size = new System.Drawing.Size(255, 21);
             this.textBoxCameraIP.TabIndex = 2;
             this.textBoxCameraIP.TextChanged += new System.EventHandler(this.OnCameraParamChanged);
+            // 
+            // label14
+            // 
+            this.label14.AutoSize = true;
+            this.label14.ImeMode = System.Windows.Forms.ImeMode.NoControl;
+            this.label14.Location = new System.Drawing.Point(30, 70);
+            this.label14.Name = "label14";
+            this.label14.Size = new System.Drawing.Size(53, 12);
+            this.label14.TabIndex = 0;
+            this.label14.Text = "相机命名";
             // 
             // lbTip
             // 
@@ -461,7 +482,7 @@
             // 
             // buttonReadParam
             // 
-            this.buttonReadParam.Location = new System.Drawing.Point(279, 425);
+            this.buttonReadParam.Location = new System.Drawing.Point(310, 415);
             this.buttonReadParam.Name = "buttonReadParam";
             this.buttonReadParam.Size = new System.Drawing.Size(75, 23);
             this.buttonReadParam.TabIndex = 16;
@@ -471,7 +492,7 @@
             // 
             // buttonSaveParam
             // 
-            this.buttonSaveParam.Location = new System.Drawing.Point(375, 425);
+            this.buttonSaveParam.Location = new System.Drawing.Point(217, 415);
             this.buttonSaveParam.Name = "buttonSaveParam";
             this.buttonSaveParam.Size = new System.Drawing.Size(75, 23);
             this.buttonSaveParam.TabIndex = 17;
@@ -479,29 +500,46 @@
             this.buttonSaveParam.UseVisualStyleBackColor = true;
             this.buttonSaveParam.Click += new System.EventHandler(this.buttonSaveParam_Click);
             // 
-            // label14
+            // buttonDeleteParam
             // 
-            this.label14.AutoSize = true;
-            this.label14.ImeMode = System.Windows.Forms.ImeMode.NoControl;
-            this.label14.Location = new System.Drawing.Point(30, 70);
-            this.label14.Name = "label14";
-            this.label14.Size = new System.Drawing.Size(53, 12);
-            this.label14.TabIndex = 0;
-            this.label14.Text = "相机命名";
+            this.buttonDeleteParam.Location = new System.Drawing.Point(405, 415);
+            this.buttonDeleteParam.Name = "buttonDeleteParam";
+            this.buttonDeleteParam.Size = new System.Drawing.Size(75, 23);
+            this.buttonDeleteParam.TabIndex = 18;
+            this.buttonDeleteParam.Text = "删除参数";
+            this.buttonDeleteParam.UseVisualStyleBackColor = true;
+            this.buttonDeleteParam.Click += new System.EventHandler(this.buttonDeleteParam_Click);
             // 
-            // textBoxCameraRename
+            // buttonApplyParam
             // 
-            this.textBoxCameraRename.Location = new System.Drawing.Point(124, 64);
-            this.textBoxCameraRename.Name = "textBoxCameraRename";
-            this.textBoxCameraRename.Size = new System.Drawing.Size(255, 21);
-            this.textBoxCameraRename.TabIndex = 1;
-            this.textBoxCameraRename.TextChanged += new System.EventHandler(this.OnCameraParamChanged);
+            this.buttonApplyParam.Location = new System.Drawing.Point(501, 415);
+            this.buttonApplyParam.Name = "buttonApplyParam";
+            this.buttonApplyParam.Size = new System.Drawing.Size(75, 23);
+            this.buttonApplyParam.TabIndex = 19;
+            this.buttonApplyParam.Text = "应用参数";
+            this.buttonApplyParam.UseVisualStyleBackColor = true;
+            this.buttonApplyParam.Click += new System.EventHandler(this.buttonApplyParam_Click);
+            // 
+            // checkBoxConstPath
+            // 
+            this.checkBoxConstPath.AutoSize = true;
+            this.checkBoxConstPath.Checked = true;
+            this.checkBoxConstPath.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxConstPath.Location = new System.Drawing.Point(144, 418);
+            this.checkBoxConstPath.Name = "checkBoxConstPath";
+            this.checkBoxConstPath.Size = new System.Drawing.Size(72, 16);
+            this.checkBoxConstPath.TabIndex = 20;
+            this.checkBoxConstPath.Text = "固定路径";
+            this.checkBoxConstPath.UseVisualStyleBackColor = true;
             // 
             // AqCameraParametersSet
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(726, 460);
+            this.Controls.Add(this.checkBoxConstPath);
+            this.Controls.Add(this.buttonApplyParam);
+            this.Controls.Add(this.buttonDeleteParam);
             this.Controls.Add(this.buttonSaveParam);
             this.Controls.Add(this.buttonReadParam);
             this.Controls.Add(this.groupBox2);
@@ -516,6 +554,7 @@
             this.groupBox2.ResumeLayout(false);
             this.groupBox2.PerformLayout();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -559,5 +598,8 @@
         private System.Windows.Forms.ComboBox comboBoxCameraName;
         private System.Windows.Forms.TextBox textBoxCameraRename;
         private System.Windows.Forms.Label label14;
+        private System.Windows.Forms.Button buttonDeleteParam;
+        private System.Windows.Forms.Button buttonApplyParam;
+        private System.Windows.Forms.CheckBox checkBoxConstPath;
     }
 }

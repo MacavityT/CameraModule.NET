@@ -55,6 +55,7 @@ namespace AqVision.Acquisition
         {
             InitializeComponent();
             InitializationCameraParam();
+            radioButtonCamera_CheckedChanged(null, null);
         }
 
         public AqAcqusitionImage(int cameraNumber)
@@ -82,7 +83,7 @@ namespace AqVision.Acquisition
         private void buttonParameterSet_Click(object sender, EventArgs e)
         {
             AqCameraParametersSet CameraParamSet;
-            CameraParamSet = new AqCameraParametersSet(CameraParam);
+            CameraParamSet = new AqCameraParametersSet(ref _cameraParam);
             CameraParamSet.Show();
             CameraParamSet.Focus();
         }
@@ -270,10 +271,6 @@ namespace AqVision.Acquisition
                 GC.Collect();
                 for (int i = 0; i < acquisitionCameraName.Count; i++)
                 {
-                    switch(ImageSource.CameraAcqusitionMode[acquisitionCameraName[i]])
-                    {
-
-                    }
                 }
 
                 return true;
@@ -282,11 +279,12 @@ namespace AqVision.Acquisition
             {
                 //Mark:加入log
                 return false;
-            }           
+            } 
         }
 
         public bool AcquisitionFile(ref List<System.Drawing.Bitmap> acquisitionBmp, List<string> acquisitionFileName)
         {
+            //acquisitionBmp.Add(Image.FromFile)
             return true;
         }
         #endregion
