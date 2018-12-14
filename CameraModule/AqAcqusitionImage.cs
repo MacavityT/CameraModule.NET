@@ -62,8 +62,10 @@ namespace AqVision.Acquisition
 
         private void InitializationCameraParam()
         {
-            string path = System.IO.Directory.GetCurrentDirectory() + "\\CameraData.dat";
-            CameraParam = CameraParam.DeSerializeAndRead(path);
+            string currentPath = System.IO.Directory.GetCurrentDirectory();
+            string cameraParamPath = currentPath + "\\CameraData.dat";
+            string imageSourcePath = currentPath + "\\ImageSource.ini";
+            CameraParam = CameraParam.DeSerializeAndRead(cameraParamPath);
         }
 
         private void InitializationControlShow()
@@ -104,6 +106,15 @@ namespace AqVision.Acquisition
             panelAcquisitionCtrl.Enabled = false;
         }
 
+
+        private void comboBoxFile_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if(((ComboBox)sender).Text=="新增文件")
+            {
+                
+            }
+        }
+
         private void buttonLocationDirectory_Click(object sender, EventArgs e)
         {
             OpenFileDialog dialog = new OpenFileDialog();
@@ -112,9 +123,13 @@ namespace AqVision.Acquisition
             dialog.Filter = "所有文件(*.*)|*.*";
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                comboBoxFile.Text = dialog.FileName;
-                comboBoxFile.DropDownStyle = ComboBoxStyle.DropDownList;
+                comboBoxFile.Items.Add(dialog.FileName);
             }
+        }
+
+        private void ReArrangeComboBoxFile()
+        {
+
         }
         #endregion
 
@@ -127,15 +142,24 @@ namespace AqVision.Acquisition
             panelAcquisitionCtrl.Enabled = false;
         }
 
+        private void comboBoxFolder_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
+        }
+
         private void buttonSelectFolder_Click(object sender, EventArgs e)
         {
             FolderBrowserDialog folder = new FolderBrowserDialog();
             folder.Description = "选择所有文件存放目录";
             if (folder.ShowDialog() == DialogResult.OK)
             {
-                comboBoxFolder.Text = folder.SelectedPath;
-                comboBoxFolder.DropDownStyle = ComboBoxStyle.DropDownList;
+                comboBoxFolder.Items.Add(folder.SelectedPath);
             }
+        }
+
+        private void ReArrangeComboBoxFolder()
+        {
+
         }
         #endregion
 

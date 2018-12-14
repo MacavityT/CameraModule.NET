@@ -244,49 +244,54 @@ namespace CameraModule
     /// </summary>
     public class ImageSource
     {
-        Dictionary<string, string> _cameraInputFile = new Dictionary<string, string>();
-        Dictionary<string, string> _cameraInputFolder = new Dictionary<string, string>();
-        Dictionary<string, List<string>> _folderFiles = new Dictionary<string, List<string>>();
-        Dictionary<string, UInt32> _folderIndex = new Dictionary<string, uint>();
-        Dictionary<string, AcquisitionMode> _cameraAcqusitionMode = new Dictionary<string, AcquisitionMode>();
+        List<string> _inputFile = new List<string>();
+        List<string> _inputFolder = new List<string>();
+        List<List<string>> _folderFiles = new List<List<string>>();
+        List<UInt32> _folderIndex = new List<UInt32>();
+        AcquisitionMode _cameraAcqusitionMode;
 
-        public Dictionary<string, string> CameraInputFile
+        public List<string> InputFile
         {
-            get { return _cameraInputFile; }
-            set { _cameraInputFile = value; }
+            get { return _inputFile; }
+            set { _inputFile = value; }
         }
 
-        public Dictionary<string, string> CameraInputFolder
+        public List<string> InputFolder
         {
-            get { return _cameraInputFolder; }
-            set { _cameraInputFolder = value; }
+            get { return _inputFolder; }
+            set { _inputFolder = value; }
         }
 
-        public Dictionary<string, List<string>> FolderFiles
+        List<List<string>> FolderFiles
         {
             get { return _folderFiles; }
             set { _folderFiles = value; }
         }
 
-        public Dictionary<string, UInt32> FolderIndex
-        {
-            get { return _folderIndex; }
-            set { _folderIndex = value; }
-        }
-
-        public Dictionary<string, AcquisitionMode> CameraAcqusitionMode
+        public AcquisitionMode CameraAcqusitionMode
         {
             get { return _cameraAcqusitionMode; }
             set { _cameraAcqusitionMode = value; }
         }
 
+        //方法：读取ini中记录的图像路径,不存在时返回NULL
+        public void ReadImagePath(string path)
+        {
+            UInt32 filesNum = Convert.ToUInt32(IniFile.ReadValue("Acquisition", "FilesNum", "0"));
+            for (int i = 0; i < filesNum; i++)
+            {
+                string strKey = string.Format("FilesName{0}", i);
+                string fileName = IniFile.ReadValue("Acquisition", strKey, "NULL");
+                InputFile.Add(fileName);
+            }
+            //Mark:添加读取文件夹方法
+        }
         //方法：逐一添加文件到文件夹字段
         public void UpdateFilesUnderFolder()
         {
             FolderFiles.Clear();
-            FolderIndex.Clear();
 
-            foreach (string folder in CameraInputFolder.Values)
+            foreach (string folder in InputFolder)
             {
                 if (folder != "")
                 {
@@ -294,8 +299,7 @@ namespace CameraModule
                     {
                         if (Directory.GetFiles(folder).Length != 0)
                         {
-                            FolderFiles.Add(folder, new List<string>(Directory.GetFiles(folder)));
-                            FolderIndex.Add(folder, 0);
+                            FolderFiles.Add(new List<string>(Directory.GetFiles(folder)));
                         }
                     }
                 }

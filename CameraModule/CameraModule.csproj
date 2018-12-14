@@ -81,6 +81,7 @@
     </Compile>
     <Compile Include="AqCameraBrand.cs" />
     <Compile Include="CameraParameters.cs" />
+    <Compile Include="IniFile.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>

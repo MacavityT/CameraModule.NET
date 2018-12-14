@@ -78,7 +78,7 @@
             this.buttonSelectFolder.Name = "buttonSelectFolder";
             this.buttonSelectFolder.Size = new System.Drawing.Size(77, 24);
             this.buttonSelectFolder.TabIndex = 10;
-            this.buttonSelectFolder.Text = "添加";
+            this.buttonSelectFolder.Text = "选择";
             this.buttonSelectFolder.UseVisualStyleBackColor = true;
             this.buttonSelectFolder.Click += new System.EventHandler(this.buttonSelectFolder_Click);
             // 
@@ -164,7 +164,7 @@
             this.buttonLocationDirectory.Name = "buttonLocationDirectory";
             this.buttonLocationDirectory.Size = new System.Drawing.Size(79, 24);
             this.buttonLocationDirectory.TabIndex = 10;
-            this.buttonLocationDirectory.Text = "添加";
+            this.buttonLocationDirectory.Text = "选择";
             this.buttonLocationDirectory.UseVisualStyleBackColor = true;
             this.buttonLocationDirectory.Click += new System.EventHandler(this.buttonLocationDirectory_Click);
             // 
@@ -312,6 +312,7 @@
             this.comboBoxFile.Name = "comboBoxFile";
             this.comboBoxFile.Size = new System.Drawing.Size(321, 20);
             this.comboBoxFile.TabIndex = 9;
+            this.comboBoxFile.SelectedIndexChanged += new System.EventHandler(this.comboBoxFile_SelectedIndexChanged);
             // 
             // comboBoxFolder
             // 
@@ -321,6 +322,7 @@
             this.comboBoxFolder.Name = "comboBoxFolder";
             this.comboBoxFolder.Size = new System.Drawing.Size(321, 20);
             this.comboBoxFolder.TabIndex = 9;
+            this.comboBoxFolder.SelectedIndexChanged += new System.EventHandler(this.comboBoxFolder_SelectedIndexChanged);
             // 
             // AqAcqusitionImage
             // 
