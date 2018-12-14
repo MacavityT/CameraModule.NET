@@ -486,7 +486,7 @@
             this.buttonReadParam.Name = "buttonReadParam";
             this.buttonReadParam.Size = new System.Drawing.Size(75, 23);
             this.buttonReadParam.TabIndex = 16;
-            this.buttonReadParam.Text = "读取参数";
+            this.buttonReadParam.Text = "读取";
             this.buttonReadParam.UseVisualStyleBackColor = true;
             this.buttonReadParam.Click += new System.EventHandler(this.buttonReadParam_Click);
             // 
@@ -496,7 +496,7 @@
             this.buttonSaveParam.Name = "buttonSaveParam";
             this.buttonSaveParam.Size = new System.Drawing.Size(75, 23);
             this.buttonSaveParam.TabIndex = 17;
-            this.buttonSaveParam.Text = "保存参数";
+            this.buttonSaveParam.Text = "保存";
             this.buttonSaveParam.UseVisualStyleBackColor = true;
             this.buttonSaveParam.Click += new System.EventHandler(this.buttonSaveParam_Click);
             // 
@@ -506,7 +506,7 @@
             this.buttonDeleteParam.Name = "buttonDeleteParam";
             this.buttonDeleteParam.Size = new System.Drawing.Size(75, 23);
             this.buttonDeleteParam.TabIndex = 18;
-            this.buttonDeleteParam.Text = "删除参数";
+            this.buttonDeleteParam.Text = "删除";
             this.buttonDeleteParam.UseVisualStyleBackColor = true;
             this.buttonDeleteParam.Click += new System.EventHandler(this.buttonDeleteParam_Click);
             // 
@@ -516,7 +516,7 @@
             this.buttonApplyParam.Name = "buttonApplyParam";
             this.buttonApplyParam.Size = new System.Drawing.Size(75, 23);
             this.buttonApplyParam.TabIndex = 19;
-            this.buttonApplyParam.Text = "应用参数";
+            this.buttonApplyParam.Text = "应用";
             this.buttonApplyParam.UseVisualStyleBackColor = true;
             this.buttonApplyParam.Click += new System.EventHandler(this.buttonApplyParam_Click);
             // 

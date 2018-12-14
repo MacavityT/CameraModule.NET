@@ -252,13 +252,14 @@ namespace CameraModule
             name = textBoxCameraRename.Text;     
             foreach(string it in CameraParam.CameraName)
             {
-                if (name == it)
+                if (name == it && comboBoxCameraName.Text == "") 
                 {
                     MessageBox.Show("请勿重复命名");
                     return false;
                 }
             }
             //相机信息      
+            CameraParam.AcquisitionParamChanged = true;
             CameraParam.CameraName.Insert(index, name);
             CameraParam.CameraId[name] = textBoxCameraID.Text;
             CameraParam.CameraIp[name] = textBoxCameraIP.Text;

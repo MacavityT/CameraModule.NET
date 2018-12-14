@@ -19,6 +19,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
+using System.Threading;
 using CameraModule;
 using AqDevice;
 using HalconDotNet;
@@ -36,7 +37,7 @@ namespace AqVision.Acquisition
         AqDevice.IAqCameraManager _cameraManager = null;
         List<AqDevice.IAqCamera> _cameras;
         Dictionary<string, int> _cameraNameToIndex = new Dictionary<string, int>();
-        CameraParameters _cameraParam = new CameraParameters();
+        CameraParameters _cameraParam = new CameraParameters();//用于GetCamera
         ImageSource _imageSource = new ImageSource();
         System.Drawing.Bitmap _revBitmap = null;
 
@@ -55,19 +56,24 @@ namespace AqVision.Acquisition
         {
             InitializeComponent();
             InitializationCameraParam();
+            InitializationControlShow();
             radioButtonCamera_CheckedChanged(null, null);
-        }
-
-        public AqAcqusitionImage(int cameraNumber)
-        {
-            //预留此构造函数，用于外界调用
-            InitializationCameraParam();
         }
 
         private void InitializationCameraParam()
         {
             string path = System.IO.Directory.GetCurrentDirectory() + "\\CameraData.dat";
             CameraParam = CameraParam.DeSerializeAndRead(path);
+        }
+
+        private void InitializationControlShow()
+        {
+            //初始化相机列表
+
+            //初始化文件列表
+            comboBoxFile.Items.Add("新增文件");
+            //初始化文件夹列表
+            comboBoxFolder.Items.Add("新增文件夹");
         }
 
         #region 选择图像采集源
@@ -106,7 +112,8 @@ namespace AqVision.Acquisition
             dialog.Filter = "所有文件(*.*)|*.*";
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                textBoxFile.Text = dialog.FileName;
+                comboBoxFile.Text = dialog.FileName;
+                comboBoxFile.DropDownStyle = ComboBoxStyle.DropDownList;
             }
         }
         #endregion
@@ -126,7 +133,8 @@ namespace AqVision.Acquisition
             folder.Description = "选择所有文件存放目录";
             if (folder.ShowDialog() == DialogResult.OK)
             {
-                textBoxFolder.Text = folder.SelectedPath;
+                comboBoxFolder.Text = folder.SelectedPath;
+                comboBoxFolder.DropDownStyle = ComboBoxStyle.DropDownList;
             }
         }
         #endregion
@@ -178,55 +186,61 @@ namespace AqVision.Acquisition
                     MessageBox.Show("未选择相机品牌", "提示信息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return false;
                 }
-                string dllPath = System.IO.Directory.GetCurrentDirectory() + "\\" + comboBoxCameraBrand.Text + ".dll";
-                Assembly assem = Assembly.LoadFile(dllPath);
-                Type type = assem.GetType("AqDevice.AqCameraFactory");
-                MethodInfo mi = type.GetMethod("GetInstance");
-                object obj = mi.Invoke(null, null);
-
-                _cameraManager = (IAqCameraManager)obj;
-                _cameraManager.Init();
-                _cameras = _cameraManager.GetCameras();
-
-                string name;
-                for (int i = 0; i < _cameras.Count; i++)
+                if (!_isConnected)
                 {
-                    if (i < CameraParam.CameraName.Count)
+                    string dllPath = System.IO.Directory.GetCurrentDirectory() + "\\" + comboBoxCameraBrand.Text + ".dll";
+                    Assembly assem = Assembly.LoadFile(dllPath);
+                    Type type = assem.GetType("AqDevice.AqCameraFactory");
+                    MethodInfo mi = type.GetMethod("GetInstance");
+                    object obj = mi.Invoke(null, null);
+
+                    _cameraManager = (IAqCameraManager)obj;
+                    _cameraManager.Init();
+                    _cameras = _cameraManager.GetCameras();
+                
+                    string name;
+                    for (int i = 0; i < _cameras.Count; i++)
                     {
-                        _cameras[i].Name = CameraParam.CameraName[i];
-                        name = _cameras[i].Name;
-                        _cameras[i].Id = CameraParam.CameraId[name];
-                        _cameras[i].Ip = CameraParam.CameraIp[name];
-                        _cameras[i].Mac = CameraParam.CameraMac[name];
-                        _cameras[i].TriggerSource = CameraParam.CameraTriggerSource[name];
-                        _cameras[i].TriggerSwitch = CameraParam.CameraTriggerSwitch[name];
-                        _cameras[i].TriggerMode = CameraParam.CameraTriggerMode[name];
-                        _cameras[i].TriggerEdge = CameraParam.CameraTriggerEdge[name];
-                        _cameras[i].ExposureTime = CameraParam.CameraExposureTime[name];
-                        _cameras[i].AcquisitionFrequency = CameraParam.CameraAcquisitionFrequency[name];
-                        _cameras[i].TriggerDelay = CameraParam.CameraTriggerDelay[name];
-                        _cameras[i].Gain = CameraParam.CameraGain[name];
-                        _cameras[i].GainAuto = CameraParam.CameraGainAuto[name];
-                        _cameras[i].ImageWidth = CameraParam.CameraImageWidth[name];
-                        _cameras[i].ImageHeight = CameraParam.CameraImageHeight[name];
-                        _cameras[i].ImageoffsetX = CameraParam.CameraImageOffsetX[name];
-                        _cameras[i].ImageoffsetY = CameraParam.CameraImageOffsetY[name];
+                        //Mark:加入本地读取的参数与获取新相机后的对比，只在相机模块界面显示
+                        //防止出现连接了新相机,但是本地参数文件中没该新相机的名字等配置信息情况出现
+                        if (i < CameraParam.CameraName.Count)
+                        {
+                            _cameras[i].Name = CameraParam.CameraName[i];
+                            name = _cameras[i].Name;
+                            _cameras[i].Id = CameraParam.CameraId[name];
+                            _cameras[i].Ip = CameraParam.CameraIp[name];
+                            _cameras[i].Mac = CameraParam.CameraMac[name];
+                            _cameras[i].TriggerSource = CameraParam.CameraTriggerSource[name];
+                            _cameras[i].TriggerSwitch = CameraParam.CameraTriggerSwitch[name];
+                            _cameras[i].TriggerMode = CameraParam.CameraTriggerMode[name];
+                            _cameras[i].TriggerEdge = CameraParam.CameraTriggerEdge[name];
+                            _cameras[i].ExposureTime = CameraParam.CameraExposureTime[name];
+                            _cameras[i].AcquisitionFrequency = CameraParam.CameraAcquisitionFrequency[name];
+                            _cameras[i].TriggerDelay = CameraParam.CameraTriggerDelay[name];
+                            _cameras[i].Gain = CameraParam.CameraGain[name];
+                            _cameras[i].GainAuto = CameraParam.CameraGainAuto[name];
+                            _cameras[i].ImageWidth = CameraParam.CameraImageWidth[name];
+                            _cameras[i].ImageHeight = CameraParam.CameraImageHeight[name];
+                            _cameras[i].ImageoffsetX = CameraParam.CameraImageOffsetX[name];
+                            _cameras[i].ImageoffsetY = CameraParam.CameraImageOffsetY[name];
+                        }
+                        else
+                        {
+                            //当连接新相机，但本地参数文件中不存在时
+                            //如何处理待定，暂时先增加参数
+                            CameraParam.CameraName.Add(_cameras[i].Name);
+                            //Mark:init()和GetCameras()执行后，并不会给曝光时间赋值，所以这里有问题，待修改
+                            CameraParam.CameraExposureTime[_cameras[i].Name] = Convert.ToInt64(_cameras[i].ExposureTime);
+                        }
+
+                        _cameraNameToIndex.Add(_cameras[i].Name, i);
+
+                        _cameras[i].RegisterCaptureCallback(new AqCaptureDelegate(RecCapture));
+
+                        _cameras[i].OpenCamera();
+                        _cameras[i].OpenStream();
                     }
-                    else
-                    {
-                        //当连接新相机，但本地参数文件中不存在时
-                        //如何处理待定，暂时先增加参数
-                        CameraParam.CameraName.Add(_cameras[i].Name);
-                        //Mark:init()和GetCameras()执行后，并不会给曝光时间赋值，所以这里有问题，待修改
-                        CameraParam.CameraExposureTime[_cameras[i].Name] = Convert.ToInt64(_cameras[i].ExposureTime);
-                    }
-
-                    _cameraNameToIndex.Add(_cameras[i].Name, i);
-
-                    _cameras[i].RegisterCaptureCallback(new AqCaptureDelegate(RecCapture));
-
-                    _cameras[i].OpenCamera();
-                    _cameras[i].OpenStream();
+                    _isConnected = true;
                 }
             }
             catch (FormatException ex)
@@ -271,6 +285,25 @@ namespace AqVision.Acquisition
                 GC.Collect();
                 for (int i = 0; i < acquisitionCameraName.Count; i++)
                 {
+                    if (CameraParam.AcquisitionParamChanged)
+                    {
+                        DisConnect();
+                        Connect();
+                        CameraParam.AcquisitionParamChanged = false;                        
+                    }
+
+                    if (!_isConnected) Connect();
+
+                    if (_cameras.Count < acquisitionCameraName.Count) return false;
+
+                    _isGetBitmapSuc = false;
+
+                    _cameras[_cameraNameToIndex[acquisitionCameraName[i]]].TriggerSoftware();
+                    while (!_isGetBitmapSuc)
+                    {
+                        Thread.Sleep(10);//等待采集回调
+                    }
+                    acquisitionBmp.Add(RevBitmap);
                 }
 
                 return true;
@@ -282,9 +315,16 @@ namespace AqVision.Acquisition
             } 
         }
 
-        public bool AcquisitionFile(ref List<System.Drawing.Bitmap> acquisitionBmp, List<string> acquisitionFileName)
+        //Index=0采集所有保存的文件路径
+        public bool AcquisitionFile(ref List<System.Drawing.Bitmap> acquisitionBmp, int[] index)
         {
             //acquisitionBmp.Add(Image.FromFile)
+            return true;
+        }
+
+        //Index=0采集所有保存的文件夹路径
+        public bool AcquisitionFolder(ref List<System.Drawing.Bitmap> acquisitionBmp, int[] index)
+        {
             return true;
         }
         #endregion
