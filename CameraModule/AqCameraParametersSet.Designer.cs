@@ -1,4 +1,4 @@
-﻿namespace CameraModule
+﻿namespace AqCameraModule
 {
     partial class AqCameraParametersSet
     {

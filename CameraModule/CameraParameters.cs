@@ -5,9 +5,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Windows.Forms;
 using AqDevice;
 
-namespace CameraModule
+namespace AqCameraModule
 {
     /// <summary>
     /// 相机源：相机参数数据结构
@@ -242,7 +243,8 @@ namespace CameraModule
     /// <summary>
     /// 文件源：保存文件路径
     /// </summary>
-    public class ImageSource
+    [Serializable]
+    public class FileParameters
     {
         List<string> _inputFile = new List<string>();
         List<string> _inputFolder = new List<string>();
@@ -262,7 +264,7 @@ namespace CameraModule
             set { _inputFolder = value; }
         }
 
-        List<List<string>> FolderFiles
+        public List<List<string>> FolderFiles
         {
             get { return _folderFiles; }
             set { _folderFiles = value; }
@@ -274,17 +276,34 @@ namespace CameraModule
             set { _cameraAcqusitionMode = value; }
         }
 
-        //方法：读取ini中记录的图像路径,不存在时返回NULL
-        public void ReadImagePath(string path)
+
+        public void SerializeAndSave(string path)
         {
+
+        }
+
+        //方法：读取ini中记录的图像路径,不存在时返回NULL
+        public FileParameters DeSerializeAndRead(string path)
+        {
+            IniFile.IniFillFullPath = path;
             UInt32 filesNum = Convert.ToUInt32(IniFile.ReadValue("Acquisition", "FilesNum", "0"));
+            UInt32 foldersNum = Convert.ToUInt32(IniFile.ReadValue("Acquisition", "FoldersNum", "0"));
+
             for (int i = 0; i < filesNum; i++)
             {
-                string strKey = string.Format("FilesName{0}", i);
-                string fileName = IniFile.ReadValue("Acquisition", strKey, "NULL");
+                string strFilesKey = string.Format("FilesName{0}", i);
+                string fileName = IniFile.ReadValue("Acquisition", strFilesKey, "NULL");
                 InputFile.Add(fileName);
             }
-            //Mark:添加读取文件夹方法
+
+            for (int j = 0; j < foldersNum; j++)
+            {
+                string strFoldersKey = string.Format("FoldersName{0}", j);
+                string folderName = IniFile.ReadValue("Acquisition", strFoldersKey, "NULL");
+                InputFolder.Add(folderName);
+            }
+            UpdateFilesUnderFolder();
+            return this;
         }
         //方法：逐一添加文件到文件夹字段
         public void UpdateFilesUnderFolder()

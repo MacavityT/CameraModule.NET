@@ -15,7 +15,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace CameraModule
+namespace AqCameraModule
 {
     public enum AcquisitionMode
     {

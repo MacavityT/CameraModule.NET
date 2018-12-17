@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28307.102
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CameraModule", "CameraModule\CameraModule.csproj", "{D7382F52-076F-43BD-8EF5-3F7B76E572A8}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AqCameraModule", "CameraModule\AqCameraModule.csproj", "{D7382F52-076F-43BD-8EF5-3F7B76E572A8}"
 	ProjectSection(ProjectDependencies) = postProject
 		{9D0E5312-2EC7-44A3-9E37-A1D216F22B53} = {9D0E5312-2EC7-44A3-9E37-A1D216F22B53}
 		{00E85D22-ABA6-4B8E-A1C4-64821069A4D3} = {00E85D22-ABA6-4B8E-A1C4-64821069A4D3}

@@ -20,12 +20,12 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using System.Windows.Forms;
 
-namespace CameraModule
+namespace AqCameraModule
 {   
     public partial class AqCameraParametersSet : Form
     {
         CameraParameters _cameraParam = new CameraParameters();
-        bool _isParamChanged = false;//数据改变后退出时会提醒
+        bool _isParamChanged = false;
         bool _isShowingParam = false;
 
         public CameraParameters CameraParam
@@ -113,7 +113,7 @@ namespace CameraModule
             }
 
             OpenFileDialog dialog = new OpenFileDialog();
-            dialog.Multiselect = false;//该值确定是否可以选择多个文件
+            dialog.Multiselect = false;
             dialog.Title = "请选择输入文件";
             dialog.Filter = "相机配置文件（*.dat）|*.dat";
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)

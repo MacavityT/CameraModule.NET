@@ -67,11 +67,11 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AcquisitionMode.cs" />
-    <Compile Include="AqAcqusitionImage.cs">
+    <Compile Include="AqAcqusitionControl.cs">
       <SubType>UserControl</SubType>
     </Compile>
-    <Compile Include="AqAcqusitionImage.Designer.cs">
-      <DependentUpon>AqAcqusitionImage.cs</DependentUpon>
+    <Compile Include="AqAcqusitionControl.Designer.cs">
+      <DependentUpon>AqAcqusitionControl.cs</DependentUpon>
     </Compile>
     <Compile Include="AqCameraParametersSet.cs">
       <SubType>Form</SubType>
@@ -86,8 +86,8 @@
     <Service Include="{94E38DFF-614B-4cbd-B67C-F211BB35CE8B}" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedResource Include="AqAcqusitionImage.resx">
-      <DependentUpon>AqAcqusitionImage.cs</DependentUpon>
+    <EmbeddedResource Include="AqAcqusitionControl.resx">
+      <DependentUpon>AqAcqusitionControl.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="AqCameraParametersSet.resx">
       <DependentUpon>AqCameraParametersSet.cs</DependentUpon>

@@ -20,7 +20,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Reflection;
 using System.Threading;
-using CameraModule;
+using AqCameraModule;
 using AqDevice;
 using HalconDotNet;
 
@@ -38,11 +38,11 @@ namespace AqVision.Acquisition
         List<AqDevice.IAqCamera> _cameras;
         Dictionary<string, int> _cameraNameToIndex = new Dictionary<string, int>();
         CameraParameters _cameraParam = new CameraParameters();//用于GetCamera
-        ImageSource _imageSource = new ImageSource();
+        FileParameters _fileParam = new FileParameters();
         System.Drawing.Bitmap _revBitmap = null;
 
         public CameraParameters CameraParam { get => _cameraParam; set => _cameraParam = value; }
-        public ImageSource ImageSource { get => _imageSource; set => _imageSource = value; }
+        public FileParameters FileParam { get => _fileParam; set => _fileParam = value; }
         public System.Drawing.Bitmap RevBitmap
         {
             get { return _revBitmap; }
@@ -63,9 +63,11 @@ namespace AqVision.Acquisition
         private void InitializationCameraParam()
         {
             string currentPath = System.IO.Directory.GetCurrentDirectory();
+            //currentPath = Application.StartupPath + "\\Config.ini"; //使用哪种获取当前路径方式待定
             string cameraParamPath = currentPath + "\\CameraData.dat";
             string imageSourcePath = currentPath + "\\ImageSource.ini";
             CameraParam = CameraParam.DeSerializeAndRead(cameraParamPath);
+            FileParam = FileParam.DeSerializeAndRead(imageSourcePath);
         }
 
         private void InitializationControlShow()
@@ -199,7 +201,8 @@ namespace AqVision.Acquisition
         public void RecCapture(object objUserparam, Bitmap bitmap)
         {
             RevBitmap = bitmap;
-            _isGetBitmapSuc = true;        }
+            _isGetBitmapSuc = true;
+        }
 
         public bool Connect()
         {
@@ -342,13 +345,23 @@ namespace AqVision.Acquisition
         //Index=0采集所有保存的文件路径
         public bool AcquisitionFile(ref List<System.Drawing.Bitmap> acquisitionBmp, int[] index)
         {
-            //acquisitionBmp.Add(Image.FromFile)
+            foreach (int key in index) 
+            {
+                acquisitionBmp.Add(Image.FromFile(FileParam.InputFile[key]) as Bitmap);
+            }
             return true;
         }
 
         //Index=0采集所有保存的文件夹路径
         public bool AcquisitionFolder(ref List<System.Drawing.Bitmap> acquisitionBmp, int[] index)
         {
+            foreach (int key in index)
+            {
+                foreach(string file in FileParam.FolderFiles[key])
+                {
+                    acquisitionBmp.Add(Image.FromFile(file) as Bitmap);
+                }
+            }
             return true;
         }
         #endregion
