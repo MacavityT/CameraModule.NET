@@ -37,7 +37,7 @@ namespace AqVision.Acquisition
         AqDevice.IAqCameraManager _cameraManager = null;
         List<AqDevice.IAqCamera> _cameras;
         Dictionary<string, int> _cameraNameToIndex = new Dictionary<string, int>();
-        CameraParameters _cameraParam = new CameraParameters();//用于GetCamera
+        CameraParameters _cameraParam = new CameraParameters();
         FileParameters _fileParam = new FileParameters();
         System.Drawing.Bitmap _revBitmap = null;
 
@@ -224,6 +224,7 @@ namespace AqVision.Acquisition
                     _cameraManager = (IAqCameraManager)obj;
                     _cameraManager.Init();
                     _cameras = _cameraManager.GetCameras();
+                    if (_cameras.Count == 0) return false;
                 
                     string name;
                     for (int i = 0; i < _cameras.Count; i++)
