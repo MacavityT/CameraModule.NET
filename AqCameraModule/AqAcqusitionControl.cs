@@ -180,7 +180,11 @@ namespace AqVision.Acquisition
 
         private void buttonSingle_Click(object sender, EventArgs e)
         {
-
+            if (!_isContinue)
+            {
+                _cameras[0].TriggerMode = AqDevice.TriggerModes.Unknow;
+                _cameras[0].TriggerSoftware();
+            }
         }
 
         private void buttonContinue_Click(object sender, EventArgs e)
@@ -188,25 +192,25 @@ namespace AqVision.Acquisition
             if(_isContinue)
             {
                 buttonContinue.Text = "连续采集";
-
+            }
+            else
+            {
+                buttonContinue.Text = "停止采集";
                 {
                     //test
                     List<Bitmap> test = new List<Bitmap>();
                     List<string> testName = new List<string>();
                     testName.Add("1");
+                    _cameras[_cameraNameToIndex[testName[0]]].TriggerMode = TriggerModes.Continuous;
                     AcquisitionCamera(ref test, testName);
-                    pictureBoxImageShow.Image = test[0];
                 }
-            }
-            else
-            {
-                buttonContinue.Text = "停止采集";
             }
             _isContinue = !_isContinue;
         }
         #endregion
 
         #region 相机控制函数
+        //采集回调
         public void RecCapture(object objUserparam, Bitmap bitmap)
         {
             RevBitmap = bitmap;
@@ -237,15 +241,21 @@ namespace AqVision.Acquisition
                     _cameras = _cameraManager.GetCameras();
                     if (_cameras.Count == 0) return false;
 
-                    string name;
                     for (int i = 0; i < _cameras.Count; i++)
                     {
-                        //Mark:加入本地读取的参数与获取新相机后的对比，只在相机模块界面显示
-                        //防止出现连接了新相机,但是本地参数文件中没该新相机的名字等配置信息情况出现
-                        if (i < CameraParam.CameraName.Count)
+                        bool isExist = false;
+                        foreach (string key in CameraParam.CameraName)
                         {
-                            _cameras[i].Name = CameraParam.CameraName[i];
-                            name = _cameras[i].Name;
+                            if (_cameras[i].Name == key)
+                            {
+                                isExist = true;
+                                break;
+                            }
+                        }
+
+                        if (isExist) 
+                        {
+                            string name = _cameras[i].Name;
                             _cameras[i].Id = CameraParam.CameraId[name];
                             _cameras[i].Ip = CameraParam.CameraIp[name];
                             _cameras[i].Mac = CameraParam.CameraMac[name];
@@ -265,15 +275,16 @@ namespace AqVision.Acquisition
                         }
                         else
                         {
-                            //当连接新相机，但本地参数文件中不存在时
-                            //如何处理待定，暂时先增加参数
                             CameraParam.CameraName.Add(_cameras[i].Name);
                             //Mark:init()和GetCameras()执行后，并不会给曝光时间赋值，所以这里有问题，待修改
                             CameraParam.CameraExposureTime[_cameras[i].Name] = Convert.ToInt64(_cameras[i].ExposureTime);
                         }
 
-                        _cameraNameToIndex.Add(_cameras[i].Name, i);
-
+                        if (!_cameraNameToIndex.ContainsKey(_cameras[i].Name)) 
+                        {
+                            _cameraNameToIndex.Add(_cameras[i].Name, i);
+                        }
+                        
                         _cameras[i].RegisterCaptureCallback(new AqCaptureDelegate(RecCapture));
 
                         _cameras[i].OpenCamera();
