@@ -219,15 +219,21 @@ namespace AqVision.Acquisition
             pictureBoxImageShow.Image = bitmap;
         }
 
+        public bool OpenCamera()
+        {
+            if (comboBoxCameraBrand.SelectedIndex == -1)
+            {
+                MessageBox.Show("未选择相机品牌", "提示信息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+            return true;
+        }
+
         public bool Connect()
         {
             try
             {
-                if (comboBoxCameraBrand.SelectedIndex == -1)
-                {
-                    MessageBox.Show("未选择相机品牌", "提示信息", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    return false;
-                }
+
                 if (!_isConnected)
                 {
                     string dllPath = System.IO.Directory.GetCurrentDirectory() + "\\" + comboBoxCameraBrand.Text + ".dll";
