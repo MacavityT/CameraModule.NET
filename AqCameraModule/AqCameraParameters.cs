@@ -14,7 +14,7 @@ namespace AqCameraModule
     /// 相机源：相机参数数据结构
     /// </summary>
     [Serializable]
-    public class CameraParameters
+    public class AqCameraParameters
     {
         bool _acquisitionParamChanged = false;
 
@@ -230,11 +230,11 @@ namespace AqCameraModule
             fileStream.Close();
         }
 
-        public CameraParameters DeSerializeAndRead(string path)
+        public AqCameraParameters DeSerializeAndRead(string path)
         {
             FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryFormatter binary = new BinaryFormatter();
-            CameraParameters param = binary.Deserialize(fileStream) as CameraParameters;
+            AqCameraParameters param = binary.Deserialize(fileStream) as AqCameraParameters;
             fileStream.Close();
             return param;
         }
@@ -244,7 +244,7 @@ namespace AqCameraModule
     /// 文件源：保存文件路径
     /// </summary>
     [Serializable]
-    public class FileParameters
+    public class AqFileParameters
     {
         List<string> _inputFile = new List<string>();
         List<string> _inputFolder = new List<string>();
@@ -283,7 +283,7 @@ namespace AqCameraModule
         }
 
         //方法：读取ini中记录的图像路径,不存在时返回NULL
-        public FileParameters DeSerializeAndRead(string path)
+        public AqFileParameters DeSerializeAndRead(string path)
         {
             IniFile.IniFillFullPath = path;
             UInt32 filesNum = Convert.ToUInt32(IniFile.ReadValue("Acquisition", "FilesNum", "0"));

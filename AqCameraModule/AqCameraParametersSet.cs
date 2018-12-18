@@ -24,11 +24,11 @@ namespace AqCameraModule
 {   
     public partial class AqCameraParametersSet : Form
     {
-        CameraParameters _cameraParam = new CameraParameters();
+        AqCameraParameters _cameraParam = new AqCameraParameters();
         bool _isParamChanged = false;
         bool _isShowingParam = false;
 
-        public CameraParameters CameraParam
+        public AqCameraParameters CameraParam
         {
             get { return _cameraParam; }
             set { _cameraParam = value; }
@@ -37,7 +37,7 @@ namespace AqCameraModule
         public string CurrentCameraName { get; set; }
         public int CurrentCameraIndex { get; set; }
 
-        public AqCameraParametersSet(ref CameraParameters param)
+        public AqCameraParametersSet(ref AqCameraParameters param)
         {
             InitializeComponent();
             CameraParam = param ?? throw new ArgumentNullException(nameof(param));  
@@ -210,7 +210,7 @@ namespace AqCameraModule
             }
         }
         //刷新窗体显示
-        private void DisplayParam(CameraParameters param, int index)
+        private void DisplayParam(AqCameraParameters param, int index)
         {
             _isShowingParam = true;
 

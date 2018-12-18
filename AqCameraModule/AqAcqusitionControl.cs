@@ -37,12 +37,12 @@ namespace AqVision.Acquisition
         AqDevice.IAqCameraManager _cameraManager = null;
         List<AqDevice.IAqCamera> _cameras;
         Dictionary<string, int> _cameraNameToIndex = new Dictionary<string, int>();
-        CameraParameters _cameraParam = new CameraParameters();
-        FileParameters _fileParam = new FileParameters();
+        AqCameraParameters _cameraParam = new AqCameraParameters();
+        AqFileParameters _fileParam = new AqFileParameters();
         System.Drawing.Bitmap _revBitmap = null;
 
-        public CameraParameters CameraParam { get => _cameraParam; set => _cameraParam = value; }
-        public FileParameters FileParam { get => _fileParam; set => _fileParam = value; }
+        public AqCameraParameters CameraParam { get => _cameraParam; set => _cameraParam = value; }
+        public AqFileParameters FileParam { get => _fileParam; set => _fileParam = value; }
         public System.Drawing.Bitmap RevBitmap
         {
             get { return _revBitmap; }
@@ -188,6 +188,15 @@ namespace AqVision.Acquisition
             if(_isContinue)
             {
                 buttonContinue.Text = "连续采集";
+
+                {
+                    //test
+                    List<Bitmap> test = new List<Bitmap>();
+                    List<string> testName = new List<string>();
+                    testName.Add("1");
+                    AcquisitionCamera(ref test, testName);
+                    pictureBoxImageShow.Image = test[0];
+                }
             }
             else
             {
@@ -202,6 +211,8 @@ namespace AqVision.Acquisition
         {
             RevBitmap = bitmap;
             _isGetBitmapSuc = true;
+
+            pictureBoxImageShow.Image = bitmap;
         }
 
         public bool Connect()
@@ -225,7 +236,7 @@ namespace AqVision.Acquisition
                     _cameraManager.Init();
                     _cameras = _cameraManager.GetCameras();
                     if (_cameras.Count == 0) return false;
-                
+
                     string name;
                     for (int i = 0; i < _cameras.Count; i++)
                     {
@@ -268,6 +279,8 @@ namespace AqVision.Acquisition
                         _cameras[i].OpenCamera();
                         _cameras[i].OpenStream();
                     }
+
+
                     _isConnected = true;
                 }
             }
