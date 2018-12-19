@@ -1,6 +1,6 @@
 ﻿namespace AqVision.Acquisition
 {
-    partial class AqAcqusitionImage
+    partial class AqAcqusitionControl
     {
         /// <summary>
         /// 必需的设计器变量。
