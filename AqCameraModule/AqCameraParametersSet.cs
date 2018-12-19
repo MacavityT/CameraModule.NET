@@ -37,19 +37,14 @@ namespace AqCameraModule
         public string CurrentCameraName { get; set; }
         public int CurrentCameraIndex { get; set; }
 
-        public AqCameraParametersSet(ref AqCameraParameters param)
-        {
-            InitializeComponent();
-            CameraParam = param ?? throw new ArgumentNullException(nameof(param));  
-            
-            RearrangeCameraName();           
-            DisplayParam(CameraParam, 0);
-        }
-
         public AqCameraParametersSet()
         {
             InitializeComponent();
             RearrangeCameraName();
+            if (CameraParam.CameraName.Count > 0)
+            {
+                DisplayParam(CameraParam, 0);
+            }
         }
 
         protected override void OnClosing(CancelEventArgs eventArgs)

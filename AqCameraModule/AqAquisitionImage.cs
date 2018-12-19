@@ -15,18 +15,21 @@ namespace AqCameraModule
     public delegate void DelegateOnError(int id);
     public delegate void DelegateOnBitmap(string strBmpBase64);
 
-    class AqAquisitionImage
+    public class AqAcquisitionImage
     {
         bool _isOpened = false;
         bool _isContinue = false;
-        bool _isGetBitmapSuc = false;
-        AqDevice.IAqCameraManager _cameraManager = null;
-        List<AqDevice.IAqCamera> _cameras;
-        Dictionary<string, int> _cameraNameToIndex = new Dictionary<string, int>();
+        bool _isCaptured = false;
         AqCameraParameters _cameraParam = new AqCameraParameters();
         AqFileParameters _fileParam = new AqFileParameters();
         System.Drawing.Bitmap _revBitmap = null;
+        AqDevice.IAqCameraManager _cameraManager = null;
+        List<AqDevice.IAqCamera> _cameras = null;
+        Dictionary<string, int> _cameraNameToIndex = new Dictionary<string, int>();
 
+        public bool IsOpened { get => _isOpened; set => _isOpened = value; }
+        public bool IsContinue { get => _isContinue; set => _isContinue = value; }
+        public bool IsCaptured { get => _isCaptured; set => _isCaptured = value; }
         public AqCameraParameters CameraParam { get => _cameraParam; set => _cameraParam = value; }
         public AqFileParameters FileParam { get => _fileParam; set => _fileParam = value; }
         public System.Drawing.Bitmap RevBitmap
@@ -38,7 +41,7 @@ namespace AqCameraModule
         private event DelegateOnError EventOnError;
         private event DelegateOnBitmap EventOnBitmap;
 
-        public AqAquisitionImage()
+        public AqAcquisitionImage()
         {
             InitializeAcquisitionParam();
         }
@@ -58,12 +61,12 @@ namespace AqCameraModule
         public void RecCapture(object objUserparam, Bitmap bitmap)
         {
             RevBitmap = bitmap;
-            _isGetBitmapSuc = true;
+            IsCaptured = true;
         }
 
         public bool OpenAllCamera()
         {
-            if (!_isOpened)
+            if (!IsOpened)
             {
                 string dllPath = System.IO.Directory.GetCurrentDirectory() + "\\" + comboBoxCameraBrand.Text + ".dll";
                 Assembly assem = Assembly.LoadFile(dllPath);
@@ -84,7 +87,7 @@ namespace AqCameraModule
                     _cameraNameToIndex.Add(_cameras[i].Name, i);
                 }
 
-                _isOpened = true;
+                IsOpened = true;
             }
 
             return true;
@@ -92,7 +95,7 @@ namespace AqCameraModule
 
         public bool OpenOneStream(int index)
         {
-            if (!_isOpened) return false;
+            if (!IsOpened) return false;
 
             string name = _cameras[index].Name;
             if (CameraParam.CameraName.Contains(_cameras[index].Name))
@@ -119,7 +122,10 @@ namespace AqCameraModule
                 CameraParam.CameraName.Add(_cameras[index].Name);
             }
 
-            _cameras[index].OpenStream();
+            if (_cameras[index].OpenStream() != 1) return false;
+
+            if (_cameras[index].TriggerMode == AqDevice.TriggerModes.Continuous) IsContinue = true;
+            else IsContinue = false;
 
             return true;
         }
@@ -128,14 +134,14 @@ namespace AqCameraModule
         {
             try
             {
-                if (_isOpened)
+                if (IsOpened)
                 {
                     for (int i = 0; i < _cameras.Count; i++)
                     {
                         _cameras[i].CloseCamera();
                     }
                 }
-                _isOpened = false;
+                IsOpened = false;
             }
             catch (Exception ex)
             {
@@ -181,10 +187,10 @@ namespace AqCameraModule
 
                     if (_cameras.Count < acquisitionCameraName.Count) return false;
 
-                    _isGetBitmapSuc = false;
+                    IsCaptured = false;
 
                     _cameras[_cameraNameToIndex[acquisitionCameraName[i]]].TriggerSoftware();
-                    while (!_isGetBitmapSuc)
+                    while (!IsCaptured)
                     {
                         Thread.Sleep(10);//等待采集回调
                     }
