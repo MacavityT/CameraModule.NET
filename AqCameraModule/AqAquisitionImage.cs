@@ -68,7 +68,8 @@ namespace AqCameraModule
         {
             if (!IsOpened)
             {
-                string dllPath = System.IO.Directory.GetCurrentDirectory() + "\\" + comboBoxCameraBrand.Text + ".dll";
+                IniFile.IniFillFullPath = System.IO.Directory.GetCurrentDirectory() + "\\DLLPATH";
+                string dllPath = IniFile.ReadValue("Acquisition", "DLLPATH", "NULL");
                 Assembly assem = Assembly.LoadFile(dllPath);
                 Type type = assem.GetType("AqDevice.AqCameraFactory");
                 MethodInfo mi = type.GetMethod("GetInstance");

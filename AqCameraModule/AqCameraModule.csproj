@@ -78,6 +78,7 @@
     <Compile Include="AqAcqusitionControl.Designer.cs">
       <DependentUpon>AqAcqusitionControl.cs</DependentUpon>
     </Compile>
+    <Compile Include="AqAquisitionImage.cs" />
     <Compile Include="AqCameraParametersSet.cs">
       <SubType>Form</SubType>
     </Compile>
