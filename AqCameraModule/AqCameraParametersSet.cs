@@ -40,11 +40,12 @@ namespace AqCameraModule
         public AqCameraParametersSet()
         {
             InitializeComponent();
-            RearrangeCameraName();
-            if (CameraParam.CameraName.Count > 0)
-            {
-                DisplayParam(CameraParam, 0);
-            }
+        }
+
+        public AqCameraParametersSet(ref AqCameraParameters param)
+        {
+            CameraParam = param;
+            InitializeComponent();
         }
 
         protected override void OnClosing(CancelEventArgs eventArgs)
@@ -55,13 +56,22 @@ namespace AqCameraModule
                     MessageBoxIcon.Question) == DialogResult.No)
                 {
                     eventArgs.Cancel = true;
-                    this.Hide();
                 }
                 else
                 {
                     eventArgs.Cancel = false;
                 }
             }
+        }
+
+        protected override void OnShown(EventArgs e)
+        {
+            RearrangeCameraName();
+            if (CameraParam.CameraName.Count > 0)
+            {
+                DisplayParam(CameraParam, 0);
+            }
+            base.OnShown(e);
         }
 
         //所有修改参数操作都会触发此函数

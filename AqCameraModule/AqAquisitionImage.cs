@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using System.Drawing;
 using System.Reflection;
 using System.Threading;
+using System.IO;
 using AqCameraModule;
 using AqDevice;
 
@@ -49,11 +50,16 @@ namespace AqCameraModule
         private void InitializeAcquisitionParam()
         {
             string currentPath = System.IO.Directory.GetCurrentDirectory();
-            //currentPath = Application.StartupPath + "\\Config.ini"; //使用哪种获取当前路径方式待定
             string cameraParamPath = currentPath + "\\CameraData.dat";
             string imageSourcePath = currentPath + "\\ImageSource.ini";
-            CameraParam = CameraParam.DeSerializeAndRead(cameraParamPath);
-            FileParam = FileParam.DeSerializeAndRead(imageSourcePath);
+            if (File.Exists(cameraParamPath))
+            {
+                CameraParam = CameraParam.DeSerializeAndRead(cameraParamPath);
+            }
+            if (File.Exists(imageSourcePath))
+            {
+                FileParam = FileParam.DeSerializeAndRead(imageSourcePath);
+            }
         }
 
         #region 相机控制函数
@@ -70,7 +76,9 @@ namespace AqCameraModule
             {
                 IniFile.IniFillFullPath = System.IO.Directory.GetCurrentDirectory() + "\\DLLPATH";
                 string dllPath = IniFile.ReadValue("Acquisition", "DLLPATH", "NULL");
-                Assembly assem = Assembly.LoadFile(dllPath);
+                //mark:dllName选择方案待定
+                string dllName = IniFile.ReadValue("Acquisition", "DLLNAME", "NULL");
+                Assembly assem = Assembly.LoadFile(dllPath + dllName);
                 Type type = assem.GetType("AqDevice.AqCameraFactory");
                 MethodInfo mi = type.GetMethod("GetInstance");
                 object obj = mi.Invoke(null, null);
