@@ -14,7 +14,7 @@ using AqDevice;
 namespace AqCameraModule
 {
     public delegate void DelegateOnError(int id);
-    public delegate void DelegateOnBitmap(string strBmpBase64);
+    public delegate void DelegateOnBitmap(Bitmap bitmap);
 
     public class AqAcquisitionImage
     {
@@ -40,7 +40,7 @@ namespace AqCameraModule
         }
 
         private event DelegateOnError EventOnError;
-        private event DelegateOnBitmap EventOnBitmap;
+        public event DelegateOnBitmap EventOnBitmap;
 
         public AqAcquisitionImage()
         {
@@ -63,13 +63,6 @@ namespace AqCameraModule
         }
 
         #region 相机控制函数
-        //采集回调
-        public void RecCapture(object objUserparam, Bitmap bitmap)
-        {
-            RevBitmap = bitmap;
-            IsCaptured = true;
-        }
-
         public bool OpenAllCamera()
         {
             if (!IsOpened)
@@ -155,30 +148,13 @@ namespace AqCameraModule
             catch (Exception ex)
             {
                 System.Windows.Forms.MessageBox.Show("IntegrationTesting DisConnect error " + ex.Message);
-                //Mark:此处加入log
             }
             return true;
         }
+        #endregion
 
-        public bool Connect()
-        {
-            try
-            {
-                //preservation and wait for use.
-            }
-            catch (FormatException ex)
-            {
-                System.Windows.Forms.MessageBox.Show("Camera Connect Format error " + ex.Message);
-            }
-            catch (Exception ex)
-            {
-                System.Windows.Forms.MessageBox.Show("Camera Connect error " + ex.Message);
-            }
-
-            return true;
-        }
-
-        public bool AcquisitionCamera(ref List<System.Drawing.Bitmap> acquisitionBmp, List<string> acquisitionCameraName)
+        #region 采集函数
+        public void AcquisitionCamera(List<string> acquisitionCameraName)
         {
             try
             {
@@ -194,45 +170,47 @@ namespace AqCameraModule
                         CameraParam.AcquisitionParamChanged = false;
                     }
 
-                    if (_cameras.Count < acquisitionCameraName.Count) return false;
+                    if (_cameras.Count < acquisitionCameraName.Count) return ;
 
                     IsCaptured = false;
 
                     _cameras[_cameraNameToIndex[acquisitionCameraName[i]]].TriggerSoftware();
-                    while (!IsCaptured)
-                    {
-                        Thread.Sleep(10);//等待采集回调
-                    }
-                    acquisitionBmp.Add(RevBitmap);
                 }
-
-                return true;
+            }
+            catch (FormatException ex)
+            {
+                System.Windows.Forms.MessageBox.Show("Camera Connect Format error " + ex.Message);
             }
             catch (Exception ex)
             {
-                //Mark:加入log
-                return false;
+                System.Windows.Forms.MessageBox.Show("Camera Connect error " + ex.Message);
             }
         }
 
-        //Index=0采集所有保存的文件路径
-        public bool AcquisitionFile(ref List<System.Drawing.Bitmap> acquisitionBmp, int[] index)
+        //相机采集回调
+        public void RecCapture(object objUserparam, Bitmap bitmap)
+        {
+            RevBitmap = bitmap;
+            IsCaptured = true;
+            EventOnBitmap(bitmap);
+        }
+
+        public bool AcquisitionFile(int[] index)
         {
             foreach (int key in index)
             {
-                acquisitionBmp.Add(Image.FromFile(FileParam.FilePath[key]) as Bitmap);
+                EventOnBitmap(Image.FromFile(FileParam.FilePath[key]) as Bitmap);
             }
             return true;
         }
 
-        //Index=0采集所有保存的文件夹路径
-        public bool AcquisitionFolder(ref List<System.Drawing.Bitmap> acquisitionBmp, int[] index)
+        public bool AcquisitionFolder(int[] index)
         {
             foreach (int key in index)
             {
                 foreach (string file in FileParam.FolderFiles[key])
                 {
-                    acquisitionBmp.Add(Image.FromFile(file) as Bitmap);
+                    EventOnBitmap(Image.FromFile(file) as Bitmap);
                 }
             }
             return true;

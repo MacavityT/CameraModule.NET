@@ -47,12 +47,20 @@ namespace AqVision.Acquisition
             ReArrangeComboBoxCameraBrand();
             ReArrangeComboBoxFile();
             ReArrangeComboBoxFolder();
+            //注册显示
+            AcquisitionImage.EventOnBitmap += new DelegateOnBitmap(OnGetBitmap);
         }
 
         //回调，参数设置界面点击应用或保存时触发
         private void OnCameraParamChanged(AqCameraParameters cameraParam)
         {
             AcquisitionImage.CameraParam = cameraParam;
+        }
+
+        //回调，采集到图像时触发
+        private void OnGetBitmap(Bitmap bitmap)
+        {
+            pictureBoxImageShow.Image = bitmap;
         }
 
         #region 选择图像采集源

@@ -227,7 +227,6 @@ namespace AqCameraModule
             }
         }
 
-        //方法：串行化，用于数据保存
         public void SerializeAndSave()
         {
             FileStream fileStream = new FileStream(CameraParamPath, FileMode.Create);
@@ -292,10 +291,23 @@ namespace AqCameraModule
 
         public void SerializeAndSave()
         {
+            IniFile.IniFillFullPath = FileParamPath;
+            IniFile.WriteValue("Acquisition", "FilesNum", FilePath.Count);
+            IniFile.WriteValue("Acquisition", "FoldersNum", FolderPath.Count);
 
+            for (int i = 0; i < FilePath.Count; i++)
+            {
+                string strFilesKey = string.Format("FilesName{0}", i);
+                IniFile.WriteValue("Acquisition", strFilesKey, FilePath[i]);
+            }
+
+            for (int j = 0; j < FolderPath.Count; j++)
+            {
+                string strFoldersKey = string.Format("FoldersName{0}", j);
+                IniFile.WriteValue("Acquisition", strFoldersKey, FolderPath[j]);
+            }
         }
 
-        //方法：读取ini中记录的图像路径,不存在时返回NULL
         public AqFileParameters DeSerializeAndRead()
         {
             IniFile.IniFillFullPath = FileParamPath;
@@ -318,7 +330,8 @@ namespace AqCameraModule
             UpdateFilesUnderFolder();
             return this;
         }
-        //方法：逐一添加文件到文件夹字段
+
+        //方法：遍历添加文件夹中的文件路径到FolderFiles
         public void UpdateFilesUnderFolder()
         {
             FolderFiles.Clear();
