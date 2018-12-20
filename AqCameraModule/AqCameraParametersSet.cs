@@ -21,7 +21,9 @@ using System.Diagnostics;
 using System.Windows.Forms;
 
 namespace AqCameraModule
-{   
+{
+    public delegate void CameraParamChangedHandler(AqCameraParameters cameraParam);
+
     public partial class AqCameraParametersSet : Form
     {
         AqCameraParameters _cameraParam = new AqCameraParameters();
@@ -36,6 +38,8 @@ namespace AqCameraModule
 
         public string CurrentCameraName { get; set; }
         public int CurrentCameraIndex { get; set; }
+
+        public event CameraParamChangedHandler CameraparamChanged;
 
         public AqCameraParametersSet()
         {
@@ -284,7 +288,8 @@ namespace AqCameraModule
             CameraParam.CameraGain[name] = Convert.ToDouble(textBoxGain.Text);
             CameraParam.CameraAcquisitionFrequency[name] = Convert.ToDouble(textBoxAcquisitionFrequency.Text);
             CameraParam.CameraGainAuto[name] = Convert.ToBoolean(checkBoxAutoGain.Checked);
-
+            //发送事件，上层界面接收
+            CameraparamChanged(CameraParam);
             return true;
         }
 

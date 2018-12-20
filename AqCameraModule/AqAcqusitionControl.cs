@@ -51,6 +51,12 @@ namespace AqVision.Acquisition
             comboBoxFolder.Items.Add("新增文件夹");
         }
 
+        //回调，参数设置界面点击应用或保存时触发
+        private void OnCameraParamChanged(AqCameraParameters cameraParam)
+        {
+            AcquisitionImage.CameraParam = cameraParam;
+        }
+
         #region 选择图像采集源
         #region From Camera
         private void radioButtonCamera_CheckedChanged(object sender, EventArgs e)
@@ -65,6 +71,7 @@ namespace AqVision.Acquisition
         {
             AqCameraParametersSet CameraParamSet = new AqCameraParametersSet();
             CameraParamSet.CameraParam = AcquisitionImage.CameraParam;
+            CameraParamSet.CameraparamChanged += new CameraParamChangedHandler(OnCameraParamChanged);
             CameraParamSet.Show();
             CameraParamSet.Focus();
         }
