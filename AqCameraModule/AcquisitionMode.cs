@@ -19,7 +19,7 @@ namespace AqCameraModule
 {
     public enum AcquisitionMode
     {
-        FromCamera,
+        //FromCamera,
         FromFile,
         FromFolder
     }

@@ -17,7 +17,7 @@ namespace AqCameraModule
     public class AqCameraParameters
     {
         bool _acquisitionParamChanged = false;
-
+        string _cameraParamPath = "";
         List<string> _cameraName = new List<string>();
         Dictionary<string, AqCameraBrand> _cameraBrand = new Dictionary<string, AqCameraBrand>();             
         Dictionary<string, string> _cameraId = new Dictionary<string, string>();
@@ -41,6 +41,12 @@ namespace AqCameraModule
         {
             get { return _acquisitionParamChanged; }
             set { _acquisitionParamChanged = value; }
+        }
+
+        public string CameraParamPath
+        {
+            get => _cameraParamPath;
+            set => _cameraParamPath = value;
         }
 
         //相机参数：对应SDK开发接口      
@@ -222,17 +228,17 @@ namespace AqCameraModule
         }
 
         //方法：串行化，用于数据保存
-        public void SerializeAndSave(string path)
+        public void SerializeAndSave()
         {
-            FileStream fileStream = new FileStream(path, FileMode.Create);
+            FileStream fileStream = new FileStream(CameraParamPath, FileMode.Create);
             BinaryFormatter binary = new BinaryFormatter();
             binary.Serialize(fileStream, this);
             fileStream.Close();
         }
 
-        public AqCameraParameters DeSerializeAndRead(string path)
+        public AqCameraParameters DeSerializeAndRead()
         {
-            FileStream fileStream = new FileStream(path, FileMode.Open, FileAccess.Read, FileShare.Read);
+            FileStream fileStream = new FileStream(CameraParamPath, FileMode.Open, FileAccess.Read, FileShare.Read);
             BinaryFormatter binary = new BinaryFormatter();
             AqCameraParameters param = binary.Deserialize(fileStream) as AqCameraParameters;
             fileStream.Close();
@@ -246,22 +252,29 @@ namespace AqCameraModule
     [Serializable]
     public class AqFileParameters
     {
-        List<string> _inputFile = new List<string>();
-        List<string> _inputFolder = new List<string>();
+        string _fileParamPath = "";
+        List<string> _filePath = new List<string>();
+        List<string> _folderPath = new List<string>();
         List<List<string>> _folderFiles = new List<List<string>>();
         List<UInt32> _folderIndex = new List<UInt32>();
         AcquisitionMode _cameraAcqusitionMode;
 
-        public List<string> InputFile
+        public string FileParamPath
         {
-            get { return _inputFile; }
-            set { _inputFile = value; }
+            get => _fileParamPath;
+            set => _fileParamPath = value;
         }
 
-        public List<string> InputFolder
+        public List<string> FilePath
         {
-            get { return _inputFolder; }
-            set { _inputFolder = value; }
+            get { return _filePath; }
+            set { _filePath = value; }
+        }
+
+        public List<string> FolderPath
+        {
+            get { return _folderPath; }
+            set { _folderPath = value; }
         }
 
         public List<List<string>> FolderFiles
@@ -277,15 +290,15 @@ namespace AqCameraModule
         }
 
 
-        public void SerializeAndSave(string path)
+        public void SerializeAndSave()
         {
 
         }
 
         //方法：读取ini中记录的图像路径,不存在时返回NULL
-        public AqFileParameters DeSerializeAndRead(string path)
+        public AqFileParameters DeSerializeAndRead()
         {
-            IniFile.IniFillFullPath = path;
+            IniFile.IniFillFullPath = FileParamPath;
             UInt32 filesNum = Convert.ToUInt32(IniFile.ReadValue("Acquisition", "FilesNum", "0"));
             UInt32 foldersNum = Convert.ToUInt32(IniFile.ReadValue("Acquisition", "FoldersNum", "0"));
 
@@ -293,14 +306,14 @@ namespace AqCameraModule
             {
                 string strFilesKey = string.Format("FilesName{0}", i);
                 string fileName = IniFile.ReadValue("Acquisition", strFilesKey, "NULL");
-                InputFile.Add(fileName);
+                FilePath.Add(fileName);
             }
 
             for (int j = 0; j < foldersNum; j++)
             {
                 string strFoldersKey = string.Format("FoldersName{0}", j);
                 string folderName = IniFile.ReadValue("Acquisition", strFoldersKey, "NULL");
-                InputFolder.Add(folderName);
+                FolderPath.Add(folderName);
             }
             UpdateFilesUnderFolder();
             return this;
@@ -310,7 +323,7 @@ namespace AqCameraModule
         {
             FolderFiles.Clear();
 
-            foreach (string folder in InputFolder)
+            foreach (string folder in FolderPath)
             {
                 if (folder != "")
                 {

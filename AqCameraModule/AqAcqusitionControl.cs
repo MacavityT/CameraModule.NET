@@ -43,12 +43,10 @@ namespace AqVision.Acquisition
 
         private void InitializationControlShow()
         {
-            //初始化相机列表
-
-            //初始化文件列表
-            comboBoxFile.Items.Add("新增文件");
-            //初始化文件夹列表
-            comboBoxFolder.Items.Add("新增文件夹");
+            ReArrangeComboBoxCameraName();
+            ReArrangeComboBoxCameraBrand();
+            ReArrangeComboBoxFile();
+            ReArrangeComboBoxFolder();
         }
 
         //回调，参数设置界面点击应用或保存时触发
@@ -75,6 +73,21 @@ namespace AqVision.Acquisition
             CameraParamSet.Show();
             CameraParamSet.Focus();
         }
+
+        private void ReArrangeComboBoxCameraName()
+        {
+            comboBoxCameraName.Items.Clear();
+            for (int i = 0; i < AcquisitionImage.CameraParam.CameraName.Count; i++)
+            {
+                comboBoxCameraName.Items.Add(AcquisitionImage.CameraParam.CameraName[i]);
+            }
+            comboBoxCameraName.SelectedIndex = 0;
+        }
+
+        private void ReArrangeComboBoxCameraBrand()
+        {
+            comboBoxCameraBrand.SelectedIndex = 0;
+        }
         #endregion
 
         #region From File
@@ -86,12 +99,14 @@ namespace AqVision.Acquisition
             panelAcquisitionCtrl.Enabled = false;
         }
 
-
-        private void comboBoxFile_SelectedIndexChanged(object sender, EventArgs e)
+        private void buttonDeleteFile_Click(object sender, EventArgs e)
         {
-            if (((ComboBox)sender).Text == "新增文件")
+            int index = comboBoxFile.SelectedIndex;
+            if (index >= 0)
             {
-
+                AcquisitionImage.FileParam.FilePath.RemoveAt(index);
+                AcquisitionImage.FileParam.SerializeAndSave();
+                ReArrangeComboBoxFile();
             }
         }
 
@@ -103,13 +118,29 @@ namespace AqVision.Acquisition
             dialog.Filter = "所有文件(*.*)|*.*";
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                comboBoxFile.Items.Add(dialog.FileName);
+                if (comboBoxFile.Text == "新增文件") 
+                {
+                    AcquisitionImage.FileParam.FilePath.Add(dialog.FileName);
+                }
+                else
+                {
+                    int index = comboBoxFile.SelectedIndex;
+                    AcquisitionImage.FileParam.FilePath[index] = dialog.FileName;
+                }
             }
+            AcquisitionImage.FileParam.SerializeAndSave();
+            ReArrangeComboBoxFile();
         }
 
         private void ReArrangeComboBoxFile()
         {
-
+            comboBoxFile.Items.Clear();
+            for (int i = 0; i < AcquisitionImage.FileParam.FilePath.Count; i++)
+            {
+                comboBoxFile.Items.Add(AcquisitionImage.FileParam.FilePath[i]);
+            }
+            comboBoxFile.Items.Add("新增文件");
+            comboBoxFile.SelectedIndex = 0;
         }
         #endregion
 
@@ -122,9 +153,15 @@ namespace AqVision.Acquisition
             panelAcquisitionCtrl.Enabled = false;
         }
 
-        private void comboBoxFolder_SelectedIndexChanged(object sender, EventArgs e)
+        private void buttonDeleteFolder_Click(object sender, EventArgs e)
         {
-
+            int index = comboBoxFolder.SelectedIndex;
+            if (index >= 0)
+            {
+                AcquisitionImage.FileParam.FolderPath.RemoveAt(index);
+                AcquisitionImage.FileParam.SerializeAndSave();
+                ReArrangeComboBoxFolder();
+            }
         }
 
         private void buttonSelectFolder_Click(object sender, EventArgs e)
@@ -133,13 +170,29 @@ namespace AqVision.Acquisition
             folder.Description = "选择所有文件存放目录";
             if (folder.ShowDialog() == DialogResult.OK)
             {
-                comboBoxFolder.Items.Add(folder.SelectedPath);
+                if (comboBoxFolder.Text == "新增文件夹")
+                {
+                    AcquisitionImage.FileParam.FolderPath.Add(folder.SelectedPath);
+                }
+                else
+                {
+                    int index = comboBoxFolder.SelectedIndex;
+                    AcquisitionImage.FileParam.FolderPath[index] = folder.SelectedPath;
+                }
             }
+            AcquisitionImage.FileParam.SerializeAndSave();
+            ReArrangeComboBoxFolder();
         }
 
         private void ReArrangeComboBoxFolder()
         {
-
+            comboBoxFolder.Items.Clear();
+            for (int i = 0; i < AcquisitionImage.FileParam.FolderPath.Count; i++)
+            {
+                comboBoxFolder.Items.Add(AcquisitionImage.FileParam.FolderPath[i]);
+            }
+            comboBoxFolder.Items.Add("新增文件夹");
+            comboBoxFolder.SelectedIndex = 0;
         }
         #endregion
 

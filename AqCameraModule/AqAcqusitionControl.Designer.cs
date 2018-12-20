@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.panelLocalFolder = new System.Windows.Forms.Panel();
+            this.comboBoxFolder = new System.Windows.Forms.ComboBox();
+            this.buttonDeleteFolder = new System.Windows.Forms.Button();
             this.buttonSelectFolder = new System.Windows.Forms.Button();
             this.radioButtonCamera = new System.Windows.Forms.RadioButton();
             this.comboBoxCameraName = new System.Windows.Forms.ComboBox();
@@ -39,6 +41,8 @@
             this.label2 = new System.Windows.Forms.Label();
             this.buttonLocationDirectory = new System.Windows.Forms.Button();
             this.panelCamerapanelLocalFile = new System.Windows.Forms.Panel();
+            this.comboBoxFile = new System.Windows.Forms.ComboBox();
+            this.buttonDeleteFile = new System.Windows.Forms.Button();
             this.radioButtonLocalFolder = new System.Windows.Forms.RadioButton();
             this.radioButtonLocalFile = new System.Windows.Forms.RadioButton();
             this.groupBox = new System.Windows.Forms.GroupBox();
@@ -49,10 +53,6 @@
             this.buttonContinue = new System.Windows.Forms.Button();
             this.buttonConnect = new System.Windows.Forms.Button();
             this.label3 = new System.Windows.Forms.Label();
-            this.buttonDeleteFile = new System.Windows.Forms.Button();
-            this.buttonDeleteFolder = new System.Windows.Forms.Button();
-            this.comboBoxFile = new System.Windows.Forms.ComboBox();
-            this.comboBoxFolder = new System.Windows.Forms.ComboBox();
             this.panelLocalFolder.SuspendLayout();
             this.panelCamera.SuspendLayout();
             this.panelCamerapanelLocalFile.SuspendLayout();
@@ -71,6 +71,25 @@
             this.panelLocalFolder.Name = "panelLocalFolder";
             this.panelLocalFolder.Size = new System.Drawing.Size(502, 47);
             this.panelLocalFolder.TabIndex = 8;
+            // 
+            // comboBoxFolder
+            // 
+            this.comboBoxFolder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFolder.FormattingEnabled = true;
+            this.comboBoxFolder.Location = new System.Drawing.Point(3, 15);
+            this.comboBoxFolder.Name = "comboBoxFolder";
+            this.comboBoxFolder.Size = new System.Drawing.Size(321, 20);
+            this.comboBoxFolder.TabIndex = 9;
+            // 
+            // buttonDeleteFolder
+            // 
+            this.buttonDeleteFolder.Location = new System.Drawing.Point(329, 13);
+            this.buttonDeleteFolder.Name = "buttonDeleteFolder";
+            this.buttonDeleteFolder.Size = new System.Drawing.Size(79, 24);
+            this.buttonDeleteFolder.TabIndex = 11;
+            this.buttonDeleteFolder.Text = "删除";
+            this.buttonDeleteFolder.UseVisualStyleBackColor = true;
+            this.buttonDeleteFolder.Click += new System.EventHandler(this.buttonDeleteFolder_Click);
             // 
             // buttonSelectFolder
             // 
@@ -179,6 +198,25 @@
             this.panelCamerapanelLocalFile.Size = new System.Drawing.Size(502, 57);
             this.panelCamerapanelLocalFile.TabIndex = 8;
             // 
+            // comboBoxFile
+            // 
+            this.comboBoxFile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboBoxFile.FormattingEnabled = true;
+            this.comboBoxFile.Location = new System.Drawing.Point(3, 20);
+            this.comboBoxFile.Name = "comboBoxFile";
+            this.comboBoxFile.Size = new System.Drawing.Size(321, 20);
+            this.comboBoxFile.TabIndex = 9;
+            // 
+            // buttonDeleteFile
+            // 
+            this.buttonDeleteFile.Location = new System.Drawing.Point(329, 18);
+            this.buttonDeleteFile.Name = "buttonDeleteFile";
+            this.buttonDeleteFile.Size = new System.Drawing.Size(79, 24);
+            this.buttonDeleteFile.TabIndex = 11;
+            this.buttonDeleteFile.Text = "删除";
+            this.buttonDeleteFile.UseVisualStyleBackColor = true;
+            this.buttonDeleteFile.Click += new System.EventHandler(this.buttonDeleteFile_Click);
+            // 
             // radioButtonLocalFolder
             // 
             this.radioButtonLocalFolder.AutoSize = true;
@@ -286,45 +324,7 @@
             this.label3.TabIndex = 0;
             this.label3.Text = "采集控制";
             // 
-            // buttonDeleteFile
-            // 
-            this.buttonDeleteFile.Location = new System.Drawing.Point(329, 18);
-            this.buttonDeleteFile.Name = "buttonDeleteFile";
-            this.buttonDeleteFile.Size = new System.Drawing.Size(79, 24);
-            this.buttonDeleteFile.TabIndex = 11;
-            this.buttonDeleteFile.Text = "删除";
-            this.buttonDeleteFile.UseVisualStyleBackColor = true;
-            // 
-            // buttonDeleteFolder
-            // 
-            this.buttonDeleteFolder.Location = new System.Drawing.Point(329, 13);
-            this.buttonDeleteFolder.Name = "buttonDeleteFolder";
-            this.buttonDeleteFolder.Size = new System.Drawing.Size(79, 24);
-            this.buttonDeleteFolder.TabIndex = 11;
-            this.buttonDeleteFolder.Text = "删除";
-            this.buttonDeleteFolder.UseVisualStyleBackColor = true;
-            // 
-            // comboBoxFile
-            // 
-            this.comboBoxFile.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxFile.FormattingEnabled = true;
-            this.comboBoxFile.Location = new System.Drawing.Point(3, 20);
-            this.comboBoxFile.Name = "comboBoxFile";
-            this.comboBoxFile.Size = new System.Drawing.Size(321, 20);
-            this.comboBoxFile.TabIndex = 9;
-            this.comboBoxFile.SelectedIndexChanged += new System.EventHandler(this.comboBoxFile_SelectedIndexChanged);
-            // 
-            // comboBoxFolder
-            // 
-            this.comboBoxFolder.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboBoxFolder.FormattingEnabled = true;
-            this.comboBoxFolder.Location = new System.Drawing.Point(3, 15);
-            this.comboBoxFolder.Name = "comboBoxFolder";
-            this.comboBoxFolder.Size = new System.Drawing.Size(321, 20);
-            this.comboBoxFolder.TabIndex = 9;
-            this.comboBoxFolder.SelectedIndexChanged += new System.EventHandler(this.comboBoxFolder_SelectedIndexChanged);
-            // 
-            // AqAcqusitionImage
+            // AqAcqusitionControl
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -332,7 +332,7 @@
             this.Controls.Add(this.pictureBoxImageShow);
             this.Controls.Add(this.groupBox);
             this.Controls.Add(this.label3);
-            this.Name = "AqAcqusitionImage";
+            this.Name = "AqAcqusitionControl";
             this.Size = new System.Drawing.Size(1220, 560);
             this.panelLocalFolder.ResumeLayout(false);
             this.panelCamera.ResumeLayout(false);

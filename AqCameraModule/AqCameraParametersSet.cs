@@ -127,7 +127,11 @@ namespace AqCameraModule
             dialog.Filter = "相机配置文件（*.dat）|*.dat";
             if (dialog.ShowDialog() == System.Windows.Forms.DialogResult.OK)
             {
-                CameraParam = CameraParam.DeSerializeAndRead(dialog.FileName);
+                string transit = CameraParam.CameraParamPath;
+                CameraParam.CameraParamPath = dialog.FileName;
+                CameraParam = CameraParam.DeSerializeAndRead();
+                CameraParam.CameraParamPath = transit;
+
                 DisplayParam(CameraParam, 0);
             }
             RearrangeCameraName();
@@ -138,12 +142,7 @@ namespace AqCameraModule
 
             if (false == UpdateAllData(CurrentCameraIndex, CurrentCameraName)) return;
 
-            string localFilePath = "";
-            if(checkBoxConstPath.Checked)
-            {
-                localFilePath = System.IO.Directory.GetCurrentDirectory() + "\\CameraData.dat";
-            }
-            else
+            if (!checkBoxConstPath.Checked) 
             {
                 SaveFileDialog sfd = new SaveFileDialog();
                 sfd.Filter = "相机配置文件（*.dat）|*.dat";
@@ -152,17 +151,28 @@ namespace AqCameraModule
                 //保存对话框是否记忆上次打开的目录 
                 sfd.RestoreDirectory = true;
 
+                string localFilePath = "";
                 if (sfd.ShowDialog() == DialogResult.OK)
                 {
-                    localFilePath = sfd.FileName.ToString(); //获得文件路径 
+                    localFilePath = sfd.FileName.ToString();
                 }
                 else
                 {
                     MessageBox.Show("保存失败");
                     return;
                 }
+
+                //暂存固定路径于中转站，使用后恢复路径
+                string transit = CameraParam.CameraParamPath;
+                CameraParam.CameraParamPath = localFilePath;
+                CameraParam.SerializeAndSave();
+                CameraParam.CameraParamPath = transit;
             }
-            CameraParam.SerializeAndSave(localFilePath);
+            else
+            {
+                CameraParam.SerializeAndSave();
+            }
+
             _isParamChanged = false;
             RearrangeCameraName();
         }

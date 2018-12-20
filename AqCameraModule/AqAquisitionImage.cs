@@ -50,15 +50,15 @@ namespace AqCameraModule
         private void InitializeAcquisitionParam()
         {
             string currentPath = System.IO.Directory.GetCurrentDirectory();
-            string cameraParamPath = currentPath + "\\CameraData.dat";
-            string imageSourcePath = currentPath + "\\ImageSource.ini";
-            if (File.Exists(cameraParamPath))
+            CameraParam.CameraParamPath = currentPath + "\\CameraParam.dat";
+            FileParam.FileParamPath = currentPath + "\\FileParam.ini";
+            if (File.Exists(CameraParam.CameraParamPath)) 
             {
-                CameraParam = CameraParam.DeSerializeAndRead(cameraParamPath);
+                CameraParam = CameraParam.DeSerializeAndRead();
             }
-            if (File.Exists(imageSourcePath))
+            if (File.Exists(FileParam.FileParamPath))
             {
-                FileParam = FileParam.DeSerializeAndRead(imageSourcePath);
+                FileParam = FileParam.DeSerializeAndRead();
             }
         }
 
@@ -220,7 +220,7 @@ namespace AqCameraModule
         {
             foreach (int key in index)
             {
-                acquisitionBmp.Add(Image.FromFile(FileParam.InputFile[key]) as Bitmap);
+                acquisitionBmp.Add(Image.FromFile(FileParam.FilePath[key]) as Bitmap);
             }
             return true;
         }
