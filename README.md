@@ -9,3 +9,6 @@ C# Windows Form Control--Support HikVision,DAHDENG IMAGING,and Basler cameras.
 相机参数设置界面可用于修改参数，并实时应用以及保存删除等
 
 调用使用统一接口，使用图像采集类AqAcquisitionImage.RevBitmap获取图像，不支持外部修改图像参数
+
+
+20181221：模块开发初步可使用，停止更新。转为对接公司内部框架，架构部分修改。
