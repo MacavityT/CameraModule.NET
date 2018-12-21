@@ -51,7 +51,12 @@ namespace AqVision.Acquisition
             AcquisitionImage.EventOnBitmap += new DelegateOnBitmap(OnGetBitmap);
         }
 
-        //回调，参数设置界面点击应用或保存时触发
+        /* 回调，参数设置界面点击应用或保存时触发.
+         * 有更简单的解决方案，设置界面使用带AqCameraParameters参数类型的构造函数
+         * 因为类类型为引用类型，在设置界面只声名对象，而不进行new操作
+         * 则在修改参数后，对应this.CameraParam也发生改变
+         * 此时该回调则不需传递数值，只需触发操作指令即可
+         */
         private void OnCameraParamChanged(AqCameraParameters cameraParam)
         {
             AcquisitionImage.CameraParam = cameraParam;
